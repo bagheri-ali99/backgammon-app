@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>تخته نرد ⭐</title>
+<title>Backgammon ⭐</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap');
 
@@ -800,25 +800,25 @@ min-height: 16px;
 <div class="screen" id="lobby">
 <div class="logo-area">
 <div class="logo-dice">🎲</div>
-<div class="logo-title">تخته نرد ⭐</div>
-<div class="logo-sub">بازی با استارز تلگرام</div>
+<div class="logo-title">Backgammon ⭐</div>
+<div class="logo-sub">Play with Telegram Stars</div>
 </div>
 
-<div class="stars-display">
+<div class="stars-display" id="starsDisplay" style="display:none">
 <span class="star-icon">⭐</span>
-<span id="myStars">50</span>
-<span style="color:var(--text2);font-weight:400;font-size:13px">استارز شما</span>
+<span id="myStars">0</span>
+<span style="color:var(--text2);font-weight:400;font-size:13px">Your Stars</span>
 </div>
 
 <div class="name-input-area">
-<div class="input-label">نام شما</div>
-<input class="name-input" id="playerName" type="text" placeholder="نام بازیکن..." maxlength="16" value="بازیکن">
+<div class="input-label">Your Name</div>
+<input class="name-input" id="playerName" type="text" placeholder="Player name..." maxlength="16" value="Player">
 </div>
 
-<div class="bet-selector">
-<div class="bet-label">مبلغ شرط ⭐</div>
+<div class="bet-selector" id="betSelector">
+<div class="bet-label">Bet Amount ⭐</div>
 <div class="bet-options">
-<div class="bet-btn active" data-bet="76" onclick="selectBet(76)">
+<div class="bet-btn" data-bet="76" onclick="selectBet(76)">
 <span class="bet-amount">76</span>
 <span class="bet-star">⭐</span>
 </div>
@@ -839,10 +839,10 @@ min-height: 16px;
 
 <div class="action-btns">
 <button class="btn-primary" onclick="showRooms()">
-🔍 پیدا کردن حریف
+🔍 Find Opponent
 </button>
-<button class="btn-secondary" onclick="createRoom()">
-➕ ساخت اتاق جدید
+<button class="btn-secondary" onclick="showRooms('free')">
+🆓 Play for Free
 </button>
 </div>
 </div>
@@ -852,21 +852,21 @@ min-height: 16px;
 <div class="screen hidden" id="rooms">
 <div class="rooms-header">
 <button class="back-btn" onclick="goBack('lobby')">←</button>
-<div class="rooms-title">اتاق‌های باز 🎲</div>
+<div class="rooms-title">Open Rooms 🎲</div>
 <div style="margin-right:auto;display:flex;align-items:center;gap:6px">
 <div class="online-dot"></div>
-<span id="onlineCount" style="font-size:13px;color:var(--text2)">0 آنلاین</span>
+<span id="onlineCount" style="font-size:13px;color:var(--text2)">0 Online</span>
 </div>
 </div>
 <div class="rooms-list" id="roomsList">
 <div class="empty-rooms">
 <div class="empty-icon">🎲</div>
-<div>هنوز اتاقی نیست!</div>
-<div style="font-size:12px">اولین اتاق رو بساز</div>
+<div>No rooms yet!</div>
+<div style="font-size:12px">Create the first room</div>
 </div>
 </div>
 <div style="padding:12px">
-<button class="btn-primary" onclick="createRoom()">➕ ساخت اتاق جدید</button>
+<button class="btn-primary" onclick="createRoom()">➕ Create New Room</button>
 </div>
 </div>
 
@@ -878,17 +878,17 @@ min-height: 16px;
 <div class="waiting-ring"></div>
 <div class="waiting-inner">🎲</div>
 </div>
-<div class="waiting-title">دنبال حریف می‌گردیم...</div>
-<div class="waiting-sub">صبر کن، بزودی حریفت پیدا میشه</div>
+<div class="waiting-title">Looking for opponent...</div>
+<div class="waiting-sub">Please wait, finding your opponent...</div>
 <div class="waiting-bet-info">
-<div class="label">شرط بازی</div>
+<div class="label">Bet</div>
 <div class="value" id="waitingBetDisplay">1 ⭐</div>
 </div>
 <div class="online-count">
 <div class="online-dot"></div>
-<span id="waitingOnline">12 نفر آنلاین</span>
+<span id="waitingOnline">12 نفر Online</span>
 </div>
-<button class="btn-secondary" style="max-width:200px" onclick="cancelSearch()">لغو</button>
+<button class="btn-secondary" style="max-width:200px" onclick="cancelSearch()">Cancel</button>
 </div>
 
 <!-- ===== GAME ===== -->
@@ -897,18 +897,18 @@ min-height: 16px;
 <div class="game-header">
 <div class="player-info-mini" id="opponentHeader">
 <div class="player-avatar avatar-black" id="oppAvatar">?</div>
-<div class="player-name-mini" id="oppName">حریف</div>
+<div class="player-name-mini" id="oppName">Opponent</div>
 </div>
 
 ```
 <div class="pot-display">
-<div class="pot-label">جایزه</div>
+<div class="pot-label">Prize</div>
 <div class="pot-value" id="potDisplay">2⭐</div>
 </div>
 
 <div class="player-info-mini right" id="myHeader">
 <div class="player-avatar avatar-white" id="myAvatar">?</div>
-<div class="player-name-mini" id="myNameDisplay">من</div>
+<div class="player-name-mini" id="myNameDisplay">Me</div>
 </div>
 ```
 
@@ -921,7 +921,7 @@ min-height: 16px;
 </div>
 
 <div class="game-controls">
-<div class="turn-indicator opponent-turn" id="turnIndicator">⏳ نوبت حریف</div>
+<div class="turn-indicator opponent-turn" id="turnIndicator">⏳ Opponent's Turn</div>
 <div class="dice-area">
 <div class="dice-display" id="diceDisplay">
 <div class="die" id="die1">⚀</div>
@@ -930,16 +930,16 @@ min-height: 16px;
 </div>
 <div class="selected-hint" id="selectedHint"></div>
 <div class="controls-row">
-<button class="ctrl-btn primary-action" id="rollBtn" onclick="rollDice()" disabled>🎲 تاس بریز</button>
-<button class="ctrl-btn" id="passBtn" onclick="passTurn()" disabled>⏭ پاس</button>
-<button class="ctrl-btn" onclick="toggleChat()">💬 چت</button>
+<button class="ctrl-btn primary-action" id="rollBtn" onclick="rollDice()" disabled>🎲 Roll Dice</button>
+<button class="ctrl-btn" id="passBtn" onclick="passTurn()" disabled>⏭ Pass</button>
+<button class="ctrl-btn" onclick="toggleChat()">💬 Chat</button>
 </div>
 </div>
 
 <div class="chat-area" id="chatArea">
 <div class="chat-messages" id="chatMessages"></div>
 <div class="chat-input-row">
-<input class="chat-input" id="chatInput" placeholder="پیام..." maxlength="100">
+<input class="chat-input" id="chatInput" placeholder="Message..." maxlength="100">
 <button class="chat-send" onclick="sendChat()">↑</button>
 </div>
 </div>
@@ -949,14 +949,27 @@ min-height: 16px;
 
 <div class="screen hidden" id="result">
 <div class="result-icon" id="resultIcon">🏆</div>
-<div class="result-title" id="resultTitle">بردی!</div>
+<div class="result-title" id="resultTitle">You Won!</div>
+<div style="display:flex;gap:24px;justify-content:center;margin:8px 0">
+<div style="text-align:center">
+<div style="font-size:11px;color:var(--text2)">You</div>
+<div style="font-size:36px;font-weight:900;color:var(--accent)" id="myScore">0</div>
+</div>
+<div style="font-size:28px;line-height:1;padding-top:8px;color:var(--text2)">—</div>
+<div style="text-align:center">
+<div style="font-size:11px;color:var(--text2)">Opponent</div>
+<div style="font-size:36px;font-weight:900;color:var(--accent2)" id="oppScore">0</div>
+</div>
+</div>
+<div style="font-size:12px;color:var(--text2);text-align:center">First to 3 wins!</div>
 <div class="result-stars" id="resultStars">
-<div class="rs-label">تغییر استارز</div>
-<div class="rs-value" id="resultStarsValue">+1 ⭐</div>
+<div class="rs-label">Stars Change</div>
+<div class="rs-value" id="resultStarsValue">+76 ⭐</div>
 </div>
 <div class="result-actions">
-<button class="btn-primary" onclick="playAgain()">🎲 دوباره بازی کن</button>
-<button class="btn-secondary" onclick="goBack('lobby')">🏠 لابی</button>
+<button class="btn-primary" id="rematchBtn" onclick="requestRematch()">🔄 Rematch</button>
+<button class="btn-primary" onclick="playAgain()">🎲 New Game</button>
+<button class="btn-secondary" onclick="goBack('lobby')">🏠 Lobby</button>
 </div>
 </div>
 
@@ -966,9 +979,9 @@ min-height: 16px;
 
 <script>
 // ===== STATE =====
-let myStars = 500;
-let selectedBet = 76;
-let playerName = 'بازیکن';
+let myStars = 0; // will be set from Telegram
+let selectedBet = 0; // 0 = free
+let playerName = 'Player';
 let myColor = 'white'; // white or black
 let gameState = null;
 let selectedPoint = -1;
@@ -978,12 +991,16 @@ let rooms = [];
 let isMyTurn = false;
 let diceValues = [];
 let diceUsed = [];
+let myWins = 0;
+let oppWins = 0;
+let isFreePlay = false;
+let rematchRequested = false;
 
 // ===== SIMULATED OPPONENT NAMES =====
 const opponentNames = [
-'علی کرمانی','سارا تهرانی','رضا اصفهانی','نگار مشهدی',
-'امیر شیرازی','مریم تبریزی','حسین رشتی','فاطمه اهوازی',
-'محمد کرجی','زهرا قمی','داود بندری','ندا لاهیجانی'
+'Alex K','Sara M','Ryan B','Nina T',
+'Amir S','Maria V','Hassan R','Fatima A',
+'Mike J','Zara Q','David L','Nadia P'
 ];
 
 // ===== BACKGAMMON BOARD STATE =====
@@ -1243,7 +1260,7 @@ doMove(-2, clickedPt);
 } else {
 selectedPoint = -2;
 validMoves = getBarMoves();
-document.getElementById('selectedHint').textContent = 'از نوار بردار → نقطه هدف را انتخاب کن';
+document.getElementById('selectedHint').textContent = 'From bar → select target point';
 drawBoard();
 }
 return;
@@ -1265,7 +1282,7 @@ doMove(selectedPoint, clickedPt);
 } else if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
 selectedPoint = clickedPt;
 validMoves = getValidMovesFrom(clickedPt);
-document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'نقطه مقصد را انتخاب کن' : 'حرکت ممکن نیست';
+document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
 drawBoard();
 } else {
 selectedPoint = -1;
@@ -1277,7 +1294,7 @@ drawBoard();
 if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
 selectedPoint = clickedPt;
 validMoves = getValidMovesFrom(clickedPt);
-document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'نقطه مقصد را انتخاب کن' : 'حرکت ممکن نیست';
+document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
 drawBoard();
 }
 }
@@ -1393,7 +1410,7 @@ if (dest && dest.color && dest.color !== myColor && dest.count === 1) {
 const oppColor = myColor === 'white' ? 'black' : 'white';
 gameState.bar[oppColor]++;
 gameState.points[to] = {count: 1, color: myColor};
-showToast('💥 زدی!');
+showToast('💥 Hit!');
 } else {
 if (!dest || dest.count === 0) {
 gameState.points[to] = {count: 1, color: myColor};
@@ -1461,7 +1478,7 @@ document.getElementById('passBtn').disabled = false;
 setTimeout(() => {
 const hasMove = checkAnyValidMove();
 if (!hasMove) {
-showToast('هیچ حرکتی ممکن نیست!');
+showToast('No valid moves!');
 setTimeout(() => passTurn(), 1200);
 }
 }, 550);
@@ -1634,26 +1651,53 @@ return outside === 0;
 function updateTurnIndicator() {
 const el = document.getElementById('turnIndicator');
 if (isMyTurn) {
-el.textContent = '🎲 نوبت توست! تاس بریز';
+el.textContent = '🎲 Your turn! Roll dice';
 el.className = 'turn-indicator my-turn';
 } else {
-el.textContent = '⏳ نوبت حریف...';
+el.textContent = '⏳ Opponent's Turn...';
 el.className = 'turn-indicator opponent-turn';
 }
 }
 
 function endGame(iWon) {
+if (iWon) myWins++; else oppWins++;
+
 setTimeout(() => {
+// Update scoreboard
+document.getElementById('myScore').textContent = myWins;
+document.getElementById('oppScore').textContent = oppWins;
+
+// Check if match is over (first to 3)
+const matchOver = myWins >= 3 || oppWins >= 3;
+
 document.getElementById('resultIcon').textContent = iWon ? '🏆' : '💔';
-document.getElementById('resultTitle').textContent = iWon ? 'بردی! 🎉' : 'باختی 😔';
+document.getElementById('resultTitle').textContent = iWon ? 'You Won! 🎉' : 'You Lost 😔';
 document.getElementById('resultTitle').className = 'result-title ' + (iWon ? 'win' : 'lose');
 
-const change = iWon ? selectedBet : -selectedBet;
+// Stars only change when match is fully over
+const starsEl = document.getElementById('resultStars');
+const rematchBtn = document.getElementById('rematchBtn');
+
+if (isFreePlay) {
+starsEl.style.display = 'none';
+} else if (matchOver) {
+const change = myWins >= 3 ? selectedBet : -selectedBet;
 myStars += change;
-document.getElementById('resultStarsValue').textContent =
-(iWon ? '+' : '') + change + ' ⭐';
-document.getElementById('resultStarsValue').className =
-'rs-value ' + (iWon ? 'win' : 'lose');
+document.getElementById('resultStarsValue').textContent = (change > 0 ? '+' : '') + change + ' ⭐';
+document.getElementById('resultStarsValue').className = 'rs-value ' + (change > 0 ? 'win' : 'lose');
+starsEl.style.display = 'block';
+} else {
+starsEl.style.display = 'none';
+}
+
+// Show rematch only if match not over
+rematchBtn.style.display = matchOver ? 'none' : 'block';
+
+// Show match winner banner if over
+if (matchOver) {
+document.getElementById('resultTitle').textContent =
+myWins >= 3 ? '🏆 You won the match!' : '💔 You lost the match!';
+}
 
 showScreen('result');
 }, 800);
@@ -1679,39 +1723,41 @@ b.classList.toggle('active', parseInt(b.dataset.bet) === amount);
 });
 }
 
-function showRooms() {
-playerName = document.getElementById('playerName').value.trim() || 'بازیکن';
+function showRooms(mode) {
+playerName = document.getElementById('playerName').value.trim() || 'Player';
+isFreePlay = (mode === 'free');
+if (isFreePlay) selectedBet = 0;
 generateRooms();
 showScreen('rooms');
 }
 
 function generateRooms() {
-// Simulate some rooms
 rooms = [];
-const count = Math.floor(Math.random() * 4) + 1;
+const count = Math.floor(Math.random() * 4) + 2;
 for (let i = 0; i < count; i++) {
-const bet = [76,152,304,760][Math.floor(Math.random() * 4)];
+const bet = isFreePlay ? 0 : [76,152,304,760][Math.floor(Math.random() * 4)];
 const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
 rooms.push({id: Math.random().toString(36).substr(2,8), name, bet, waiting: Math.random() > 0.5});
 }
 renderRooms();
-
 const onlineCount = Math.floor(Math.random() * 40) + 8;
-document.getElementById('onlineCount').textContent = onlineCount + ' آنلاین';
+document.getElementById('onlineCount').textContent = onlineCount + ' Online';
 }
 
 function renderRooms() {
 const list = document.getElementById('roomsList');
-const filtered = rooms.filter(r => r.bet === selectedBet);
+const filtered = isFreePlay ? rooms.filter(r => r.bet === 0) : rooms.filter(r => r.bet === selectedBet);
 
 if (filtered.length === 0) {
+// Auto-find opponent after a moment
 list.innerHTML = `
 <div class="empty-rooms">
-<div class="empty-icon">🎲</div>
-<div>اتاقی با شرط ${selectedBet}⭐ نیست</div>
-<div style="font-size:12px">اولین اتاق رو بساز!</div>
+<div class="empty-icon">🔍</div>
+<div>Looking for opponents...</div>
+<div style="font-size:12px">Finding a match for you</div>
 </div>
 `;
+setTimeout(() => autoMatch(), 2000);
 return;
 }
 
@@ -1721,36 +1767,36 @@ list.innerHTML = filtered.map((r,i) => `
 <div class="room-avatar">${r.name[0]}</div>
 <div class="room-info">
 <div class="room-name">${r.name}</div>
-<div class="room-meta">${r.waiting ? '⏳ منتظر حریف' : '🟢 آماده'}</div>
+<div class="room-meta">${r.waiting ? '⏳ Waiting' : '🟢 Ready'}</div>
 </div>
 </div>
 <div class="room-right">
-<div class="room-bet">⭐ ${r.bet}</div>
-<div class="join-badge">ورود</div>
+<div class="room-bet">${r.bet === 0 ? '🆓 Free' : '⭐ ' + r.bet}</div>
+<div class="join-badge">Join</div>
 </div>
 </div>
 `).join('');
 }
 
-function joinRoom(id, oppNameParam) {
-if (myStars < selectedBet) {
-showToast('⭐ استارز کافی نداری!');
-return;
+function autoMatch() {
+const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+startGame(name);
 }
+
+function joinRoom(id, oppNameParam) {
 roomId = id;
-const oppN = oppNameParam;
-startGame(oppN);
+startGame(oppNameParam);
 }
 
 function createRoom() {
-playerName = document.getElementById('playerName').value.trim() || 'بازیکن';
+playerName = document.getElementById('playerName').value.trim() || 'Player';
 if (myStars < selectedBet) {
-showToast('⭐ استارز کافی نداری!');
+showToast('⭐ Not enough Stars!');
 return;
 }
 document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
 const online = Math.floor(Math.random() * 40) + 8;
-document.getElementById('waitingOnline').textContent = online + ' نفر آنلاین';
+document.getElementById('waitingOnline').textContent = online + ' نفر Online';
 showScreen('matchmaking');
 
 // Simulate finding opponent after 2-4 seconds
@@ -1778,15 +1824,16 @@ validMoves = [];
 const oppColor = myColor === 'white' ? 'black' : 'white';
 
 // Update UI
-document.getElementById('myNameDisplay').textContent = playerName || 'من';
+document.getElementById('myNameDisplay').textContent = playerName || 'Me';
 document.getElementById('myAvatar').textContent = (playerName || 'م')[0];
 document.getElementById('oppName').textContent = oppN;
 document.getElementById('oppAvatar').textContent = oppN[0];
 document.getElementById('potDisplay').textContent = (selectedBet * 2) + '⭐';
 
-// Deduct bet
+// Deduct bet only if not free
+if (!isFreePlay && selectedBet > 0) {
 myStars -= selectedBet;
-document.getElementById('myStars').textContent = myStars;
+}
 
 showScreen('game');
 
@@ -1801,7 +1848,7 @@ onCanvasClick(t);
 drawBoard();
 updateTurnIndicator();
 
-addChatMessage('system', null, `بازی شروع شد! ${playerName} (${myColor === 'white' ? 'سفید' : 'سیاه'}) vs ${oppN}`);
+addChatMessage('system', null, `Game started! ${playerName} (${myColor === 'white' ? 'سفید' : 'سیاه'}) vs ${oppN}`);
 
 document.getElementById('rollBtn').disabled = !isMyTurn;
 
@@ -1813,8 +1860,17 @@ setTimeout(() => simulateOpponentTurn(), 1000);
 }
 
 function playAgain() {
+myWins = 0;
+oppWins = 0;
 showScreen('lobby');
-document.getElementById('myStars').textContent = myStars;
+}
+
+function requestRematch() {
+// Start new game round directly
+myWins = myWins; // keep scores
+oppWins = oppWins;
+const oppN = document.getElementById('oppName').textContent;
+startGame(oppN);
 }
 
 // ===== CHAT =====
@@ -1843,12 +1899,12 @@ function sendChat() {
 const input = document.getElementById('chatInput');
 const text = input.value.trim();
 if (!text) return;
-addChatMessage('me', playerName || 'من', text);
+addChatMessage('me', playerName || 'Me', text);
 input.value = '';
 
 // Simulate opponent response sometimes
 if (Math.random() > 0.6) {
-const responses = ['😄','خوبه!','آفرین!','هوم...','🎲','بازی قشنگیه','بدک نیستی!','ببینیم چی میشه 😏'];
+const responses = ['😄','Nice!','Well played!','Hmm...','🎲','Good game!','Not bad!','Let's see 😏'];
 const oppN = document.getElementById('oppName').textContent;
 setTimeout(() => {
 addChatMessage('opp', oppN, responses[Math.floor(Math.random() * responses.length)]);
@@ -1891,7 +1947,7 @@ socket.emit('get_online');
 
 socket.on('online_count', ({ count }) => {
 const els = document.querySelectorAll('#waitingOnline, #onlineCount');
-els.forEach(el => { if(el) el.textContent = count + ' نفر آنلاین'; });
+els.forEach(el => { if(el) el.textContent = count + ' نفر Online'; });
 });
 
 socket.on('waiting', () => {
@@ -1944,7 +2000,7 @@ endGame(iWon);
 });
 
 socket.on('opponent_left', () => {
-showToast('⚠️ حریف بازی رو ترک کرد!');
+showToast('⚠️ Opponent left the game!');
 setTimeout(() => endGame(true), 1500);
 });
 
@@ -1987,13 +2043,12 @@ diceUsed = [];
 selectedPoint = -1;
 validMoves = [];
 
-document.getElementById('myNameDisplay').textContent = playerName || 'من';
+document.getElementById('myNameDisplay').textContent = playerName || 'Me';
 document.getElementById('myAvatar').textContent = (playerName || 'م')[0];
 document.getElementById('oppName').textContent = oppN;
 document.getElementById('oppAvatar').textContent = oppN[0];
 document.getElementById('potDisplay').textContent = (selectedBet * 2) + '⭐';
-myStars -= selectedBet;
-document.getElementById('myStars').textContent = myStars;
+if (!isFreePlay && selectedBet > 0) myStars -= selectedBet;
 
 showScreen('game');
 setTimeout(() => {
@@ -2005,7 +2060,7 @@ onCanvasClick(e.changedTouches[0]);
 });
 drawBoard();
 updateTurnIndicator();
-addChatMessage('system', null, `بازی شروع شد! شما ${myColor === 'white' ? 'سفید' : 'سیاه'} هستید`);
+addChatMessage('system', null, `Game started! You are`);
 document.getElementById('rollBtn').disabled = !isMyTurn;
 }, 100);
 }
@@ -2013,8 +2068,8 @@ document.getElementById('rollBtn').disabled = !isMyTurn;
 // Override createRoom for real multiplayer
 const _origCreateRoom = createRoom;
 function createRoom() {
-playerName = document.getElementById('playerName').value.trim() || 'بازیکن';
-if (myStars < selectedBet) { showToast('⭐ استارز کافی نداری!'); return; }
+playerName = document.getElementById('playerName').value.trim() || 'Player';
+if (myStars < selectedBet) { showToast('⭐ Not enough Stars!'); return; }
 document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
 showScreen('matchmaking');
 connectSocket();
@@ -2033,7 +2088,7 @@ function sendChat() {
 const input = document.getElementById('chatInput');
 const text = input.value.trim();
 if (!text) return;
-addChatMessage('me', playerName || 'من', text);
+addChatMessage('me', playerName || 'Me', text);
 input.value = '';
 if (isRealMultiplayer && socket) {
 socket.emit('chat_message', { roomId, text });
