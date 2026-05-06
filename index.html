@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>RPS Stars ✊</title>
+<title>Rock Paper Scissors ✊</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -349,7 +349,7 @@ border-radius:inherit;
 <div class="screen" id="lobby">
   <div class="logo-wrap">
     <span class="logo-emoji">✊</span>
-    <div class="logo-title">RPS Stars</div>
+    <div class="logo-title">RPS Stars ✊✋✌️</div>
     <div class="logo-sub">Rock · Paper · Scissors with Telegram Stars</div>
   </div>
 
@@ -380,6 +380,7 @@ border-radius:inherit;
   </div>
 
 <button class="btn-find" onclick="findOpponent()">🔍 Find Opponent</button>
+<button onclick="playVsBot()" style="background:none;border:none;color:var(--muted);font-family:DM Sans,sans-serif;font-size:13px;cursor:pointer;padding:4px;text-decoration:underline">Play vs Bot (test mode)</button>
 
 </div>
 
@@ -453,7 +454,7 @@ border-radius:inherit;
 <div class="pick-label" id="pickLabel">Pick your move!</div>
 <div class="choices-row">
   <button class="choice-btn rock" onclick="pickChoice('rock')" id="btnRock">✊<span>Rock</span></button>
-  <button class="choice-btn paper" onclick="pickChoice('paper')" id="btnPaper">✋<span>Paper</span></button>
+  <button class="choice-btn paper" onclick="pickChoice('paper')" id="btnPaper">🖐<span>Paper</span></button>
   <button class="choice-btn scissors" onclick="pickChoice('scissors')" id="btnScissors">✌️<span>Scissors</span></button>
 </div>
 ```
@@ -545,6 +546,18 @@ function cancelSearch() {
   showScreen('lobby');
 }
 
+function playVsBot() {
+  playerName = document.getElementById('playerName').value.trim();
+  if (!playerName || playerName.length < 2) {
+    showToast('⚠️ Please enter your name!');
+    document.getElementById('playerName').focus();
+    return;
+  }
+  if (!selectedBet) { showToast('⚠️ Please select a bet!'); return; }
+  isRealMultiplayer = false;
+  startGame('🤖 RPS Bot', false);
+}
+
 // ===== SOCKET =====
 function connectSocket() {
   if (socket && socket.connected) return;
@@ -618,7 +631,7 @@ function resetRoundUI() {
   enableButtons(true);
 }
 
-const EMOJIS = { rock: '✊', paper: '✋', scissors: '✌️' };
+const EMOJIS = { rock: '✊', paper: '🖐', scissors: '✌️' };
 
 function pickChoice(choice) {
   if (myPick) return;
