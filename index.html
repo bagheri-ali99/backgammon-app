@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Backgammon ⭐</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap');
 
 :root {
 –bg: #0a0a0f;
@@ -800,170 +800,214 @@ min-height: 16px;
 <!-- ===== LOBBY ===== -->
 
 <div class="screen" id="lobby">
-<div class="logo-area">
-<div class="logo-dice">🎲</div>
-<div class="logo-title">Backgammon ⭐</div>
-<div class="logo-sub">Play with Telegram Stars</div>
-</div>
+  <div class="logo-area">
+    <div class="logo-dice">🎲</div>
+    <div class="logo-title">Backgammon ⭐</div>
+    <div class="logo-sub">Play with Telegram Stars</div>
+  </div>
 
-<div class="stars-display" id="starsDisplay" style="display:none">
-<span class="star-icon">⭐</span>
-<span id="myStars">0</span>
-<span style="color:var(--text2);font-weight:400;font-size:13px">Your Stars</span>
-</div>
+  <div class="stars-display" id="starsDisplay" style="display:none">
+    <span class="star-icon">⭐</span>
+    <span id="myStars">0</span>
+    <span style="color:var(--text2);font-weight:400;font-size:13px">Your Stars</span>
+  </div>
 
-<div class="name-input-area">
-<div class="input-label">Your Name</div>
-<input class="name-input" id="playerName" type="text" placeholder="Player name..." maxlength="16" value="Player">
-</div>
+  <div class="name-input-area">
+    <div class="input-label">Your Name</div>
+    <input class="name-input" id="playerName" type="text" placeholder="Enter your name..." maxlength="16" value="">
+  </div>
 
-<div class="bet-selector" id="betSelector">
-<div class="bet-label">Bet Amount ⭐</div>
-<div class="bet-options">
-<div class="bet-btn" data-bet="76" onclick="selectBet(76)">
-<span class="bet-amount">76</span>
-<span class="bet-star">⭐</span>
-</div>
-<div class="bet-btn" data-bet="152" onclick="selectBet(152)">
-<span class="bet-amount">152</span>
-<span class="bet-star">⭐</span>
-</div>
-<div class="bet-btn" data-bet="304" onclick="selectBet(304)">
-<span class="bet-amount">304</span>
-<span class="bet-star">⭐</span>
-</div>
-<div class="bet-btn" data-bet="760" onclick="selectBet(760)">
-<span class="bet-amount">760</span>
-<span class="bet-star">⭐</span>
-</div>
-</div>
-</div>
+  <div class="bet-selector" id="betSelector">
+    <div class="bet-label">Bet Amount ⭐</div>
+    <div class="bet-options">
+      <div class="bet-btn" data-bet="76" onclick="selectBet(76)">
+        <span class="bet-amount">76</span>
+        <span class="bet-star">⭐</span>
+      </div>
+      <div class="bet-btn" data-bet="152" onclick="selectBet(152)">
+        <span class="bet-amount">152</span>
+        <span class="bet-star">⭐</span>
+      </div>
+      <div class="bet-btn" data-bet="304" onclick="selectBet(304)">
+        <span class="bet-amount">304</span>
+        <span class="bet-star">⭐</span>
+      </div>
+      <div class="bet-btn" data-bet="760" onclick="selectBet(760)">
+        <span class="bet-amount">760</span>
+        <span class="bet-star">⭐</span>
+      </div>
+    </div>
+  </div>
 
-<div class="action-btns">
-<button class="btn-primary" onclick="showRooms()">
-🔍 Find Opponent
-</button>
-<button class="btn-secondary" onclick="showRooms('free')">
-🆓 Play for Free
-</button>
-</div>
+  <div class="action-btns">
+    <button class="btn-primary" onclick="findOpponent()">
+      🔍 Find Opponent
+    </button>
+    <button class="btn-secondary" onclick="showRooms('free')">
+      🆓 Play for Free
+    </button>
+    <button class="btn-secondary" onclick="showInvite()">
+      👥 Play with Friend
+    </button>
+  </div>
 </div>
 
 <!-- ===== ROOMS LIST ===== -->
 
 <div class="screen hidden" id="rooms">
-<div class="rooms-header">
-<button class="back-btn" onclick="goBack('lobby')">←</button>
-<div class="rooms-title">Open Rooms 🎲</div>
-<div style="margin-right:auto;display:flex;align-items:center;gap:6px">
-<div class="online-dot"></div>
-<span id="onlineCount" style="font-size:13px;color:var(--text2)">0 Online</span>
-</div>
-</div>
-<div class="rooms-list" id="roomsList"></div>
+  <div class="rooms-header">
+    <button class="back-btn" onclick="goBack('lobby')">←</button>
+    <div class="rooms-title">Open Rooms 🎲</div>
+    <div style="margin-right:auto;display:flex;align-items:center;gap:6px">
+      <div class="online-dot"></div>
+      <span id="onlineCount" style="font-size:13px;color:var(--text2)">0 Online</span>
+    </div>
+  </div>
+  <div class="rooms-list" id="roomsList"></div>
 </div>
 
 <!-- ===== MATCHMAKING ===== -->
 
 <div class="screen hidden" id="matchmaking">
-<div class="waiting-animation">
-<div class="waiting-ring"></div>
-<div class="waiting-ring"></div>
-<div class="waiting-inner">🎲</div>
-</div>
-<div class="waiting-title">Looking for opponent...</div>
-<div class="waiting-sub">Please wait, finding your opponent...</div>
-<div class="waiting-bet-info">
-<div class="label">Bet</div>
-<div class="value" id="waitingBetDisplay">1 ⭐</div>
-</div>
-<div class="online-count">
-<div class="online-dot"></div>
-<span id="waitingOnline">12 نفر Online</span>
-</div>
-<button class="btn-secondary" style="max-width:200px" onclick="cancelSearch()">Cancel</button>
+  <div class="waiting-animation">
+    <div class="waiting-ring"></div>
+    <div class="waiting-ring"></div>
+    <div class="waiting-inner">🎲</div>
+  </div>
+  <div class="waiting-title">Looking for opponent...</div>
+  <div class="waiting-sub">Please wait, finding your opponent...</div>
+  <div class="waiting-bet-info">
+    <div class="label">Bet</div>
+    <div class="value" id="waitingBetDisplay">1 ⭐</div>
+  </div>
+  <div class="online-count">
+    <div class="online-dot"></div>
+    <span id="waitingOnline">12 نفر Online</span>
+  </div>
+  <button class="btn-secondary" style="max-width:200px" onclick="cancelSearch()">Cancel</button>
 </div>
 
 <!-- ===== GAME ===== -->
 
 <div class="screen hidden" id="game">
-<div class="game-header">
-<div class="player-info-mini" id="opponentHeader">
-<div class="player-avatar avatar-black" id="oppAvatar">?</div>
-<div class="player-name-mini" id="oppName">Opponent</div>
-</div>
+  <div class="game-header">
+    <div class="player-info-mini" id="opponentHeader">
+      <div class="player-avatar avatar-black" id="oppAvatar">?</div>
+      <div class="player-name-mini" id="oppName">Opponent</div>
+    </div>
 
 ```
 <div class="pot-display">
-<div class="pot-label">Prize</div>
-<div class="pot-value" id="potDisplay">2⭐</div>
+  <div class="pot-label">Prize · First to 3 🏆</div>
+  <div class="pot-value" id="potDisplay">2⭐</div>
 </div>
 
 <div class="player-info-mini right" id="myHeader">
-<div class="player-avatar avatar-white" id="myAvatar">?</div>
-<div class="player-name-mini" id="myNameDisplay">Me</div>
+  <div class="player-avatar avatar-white" id="myAvatar">?</div>
+  <div class="player-name-mini" id="myNameDisplay">Me</div>
 </div>
 ```
 
+  </div>
+
+  <div class="board-wrapper">
+    <div class="board-container" id="boardContainer">
+      <canvas class="board-canvas" id="boardCanvas"></canvas>
+    </div>
+  </div>
+
+  <div class="game-controls">
+    <div class="turn-indicator opponent-turn" id="turnIndicator">⏳ Opponent's Turn</div>
+    <div class="dice-area">
+      <div class="dice-display" id="diceDisplay">
+        <div class="die" id="die1">⚀</div>
+        <div class="die" id="die2">⚀</div>
+      </div>
+    </div>
+    <div class="selected-hint" id="selectedHint"></div>
+    <div id="timerDisplay" style="text-align:center;font-size:13px;color:var(--text2);margin-bottom:4px;"></div>
+    <div class="controls-row">
+      <button class="ctrl-btn primary-action" id="rollBtn" onclick="rollDice()" disabled>🎲 Roll Dice</button>
+      <button class="ctrl-btn" onclick="toggleChat()">💬 Chat</button>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" placeholder="Message..." maxlength="100">
+      <button class="chat-send" onclick="sendChat()">↑</button>
+    </div>
+  </div>
 </div>
 
-<div class="board-wrapper">
-<div class="board-container" id="boardContainer">
-<canvas class="board-canvas" id="boardCanvas"></canvas>
-</div>
-</div>
+<!-- ===== INVITE ===== -->
 
-<div class="game-controls">
-<div class="turn-indicator opponent-turn" id="turnIndicator">⏳ Opponent's Turn</div>
-<div class="dice-area">
-<div class="dice-display" id="diceDisplay">
-<div class="die" id="die1">⚀</div>
-<div class="die" id="die2">⚀</div>
-</div>
-</div>
-<div class="selected-hint" id="selectedHint"></div>
-<div class="controls-row">
-<button class="ctrl-btn primary-action" id="rollBtn" onclick="rollDice()" disabled>🎲 Roll Dice</button>
-<button class="ctrl-btn" id="passBtn" onclick="passTurn()" disabled>⏭ Pass</button>
-<button class="ctrl-btn" onclick="toggleChat()">💬 Chat</button>
-</div>
-</div>
-
-<div class="chat-area" id="chatArea">
-<div class="chat-messages" id="chatMessages"></div>
-<div class="chat-input-row">
-<input class="chat-input" id="chatInput" placeholder="Message..." maxlength="100">
-<button class="chat-send" onclick="sendChat()">↑</button>
-</div>
-</div>
+<div class="screen hidden" id="invite">
+  <div style="text-align:center;margin-bottom:16px">
+    <div style="font-size:40px">👥</div>
+    <div style="font-size:20px;font-weight:700;margin-top:8px">Play with Friend</div>
+    <div style="font-size:13px;color:var(--text2);margin-top:4px">Enter your friend's Telegram username</div>
+  </div>
+  <div style="width:100%;max-width:360px">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Friend's Telegram Username</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div style="color:var(--text2);font-size:20px;font-weight:700">@</div>
+      <input id="friendUsername" type="text" placeholder="username" maxlength="32" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;font-family:inherit;font-size:16px;color:var(--text);outline:none">
+    </div>
+  </div>
+  <div style="width:100%;max-width:360px">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px;margin-top:12px">Bet Amount</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div class="bet-btn" data-bet2="0" onclick="selectBet2(0)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
+        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">Free</span>
+        <span style="font-size:11px">🆓</span>
+      </div>
+      <div class="bet-btn" data-bet2="76" onclick="selectBet2(76)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
+        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">76</span>
+        <span style="font-size:11px">⭐</span>
+      </div>
+      <div class="bet-btn" data-bet2="152" onclick="selectBet2(152)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
+        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">152</span>
+        <span style="font-size:11px">⭐</span>
+      </div>
+      <div class="bet-btn" data-bet2="304" onclick="selectBet2(304)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
+        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">304</span>
+        <span style="font-size:11px">⭐</span>
+      </div>
+    </div>
+  </div>
+  <button onclick="sendFriendInvite()" class="btn-primary" style="max-width:360px;margin-top:8px">📨 Send Invite</button>
+  <div id="inviteStatus" style="font-size:13px;color:var(--accent);text-align:center;min-height:20px;font-weight:600"></div>
+  <button class="btn-secondary" style="max-width:200px" onclick="goBack('lobby')">← Back</button>
 </div>
 
 <!-- ===== RESULT ===== -->
 
 <div class="screen hidden" id="result">
-<div class="result-icon" id="resultIcon">🏆</div>
-<div class="result-title" id="resultTitle">You Won!</div>
-<div style="display:flex;gap:24px;justify-content:center;margin:8px 0">
-<div style="text-align:center">
-<div style="font-size:11px;color:var(--text2)">You</div>
-<div style="font-size:36px;font-weight:900;color:var(--accent)" id="myScore">0</div>
-</div>
-<div style="font-size:28px;line-height:1;padding-top:8px;color:var(--text2)">—</div>
-<div style="text-align:center">
-<div style="font-size:11px;color:var(--text2)">Opponent</div>
-<div style="font-size:36px;font-weight:900;color:var(--accent2)" id="oppScore">0</div>
-</div>
-</div>
-<div style="font-size:12px;color:var(--text2);text-align:center">First to 3 wins!</div>
-<div class="result-stars" id="resultStars">
-<div class="rs-label">Stars Change</div>
-<div class="rs-value" id="resultStarsValue">+76 ⭐</div>
-</div>
-<div class="result-actions">
-<button class="btn-primary" id="rematchBtn" onclick="requestRematch()">🔄 Rematch</button>
-<button class="btn-primary" onclick="playAgain()">🎲 New Game</button>
-<button class="btn-secondary" onclick="goBack('lobby')">🏠 Lobby</button>
-</div>
+  <div class="result-icon" id="resultIcon">🏆</div>
+  <div class="result-title" id="resultTitle">You Won!</div>
+  <div style="display:flex;gap:24px;justify-content:center;margin:8px 0">
+    <div style="text-align:center">
+      <div style="font-size:11px;color:var(--text2)">You</div>
+      <div style="font-size:36px;font-weight:900;color:var(--accent)" id="myScore">0</div>
+    </div>
+    <div style="font-size:28px;line-height:1;padding-top:8px;color:var(--text2)">—</div>
+    <div style="text-align:center">
+      <div style="font-size:11px;color:var(--text2)">Opponent</div>
+      <div style="font-size:36px;font-weight:900;color:var(--accent2)" id="oppScore">0</div>
+    </div>
+  </div>
+  <div style="font-size:12px;color:var(--text2);text-align:center">First to 3 wins!</div>
+  <div class="result-stars" id="resultStars">
+    <div class="rs-label">Stars Change</div>
+    <div class="rs-value" id="resultStarsValue">+76 ⭐</div>
+  </div>
+  <div class="result-actions">
+    <button class="btn-primary" id="rematchBtn" onclick="requestRematch()">🔄 Rematch</button>
+    <button class="btn-primary" onclick="playAgain()">🎲 New Game</button>
+    <button class="btn-secondary" onclick="goBack('lobby')">🏠 Lobby</button>
+  </div>
 </div>
 
 <!-- Toast -->
@@ -991,9 +1035,9 @@ let rematchRequested = false;
 
 // ===== SIMULATED OPPONENT NAMES =====
 const opponentNames = [
-'Alex K','Sara M','Ryan B','Nina T',
-'Amir S','Maria V','Hassan R','Fatima A',
-'Mike J','Zara Q','David L','Nadia P'
+  'Alex K','Sara M','Ryan B','Nina T',
+  'Amir S','Maria V','Hassan R','Fatima A',
+  'Mike J','Zara Q','David L','Nadia P'
 ];
 
 // ===== BACKGAMMON BOARD STATE =====
@@ -1002,21 +1046,21 @@ const opponentNames = [
 // home: {white:0, black:0}
 
 function initBoard() {
-const pts = Array(24).fill(null).map(() => ({count:0, color:null}));
-// Standard backgammon setup
-pts[0] = {count:2, color:'black'};
-pts[5] = {count:5, color:'white'};
-pts[7] = {count:3, color:'white'};
-pts[11] = {count:5, color:'black'};
-pts[12] = {count:5, color:'white'};
-pts[16] = {count:3, color:'black'};
-pts[18] = {count:5, color:'black'};
-pts[23] = {count:2, color:'white'};
-return {
-points: pts,
-bar: {white:0, black:0},
-borneOff: {white:0, black:0}
-};
+  const pts = Array(24).fill(null).map(() => ({count:0, color:null}));
+  // Standard backgammon setup
+  pts[0]  = {count:2, color:'black'};
+  pts[5]  = {count:5, color:'white'};
+  pts[7]  = {count:3, color:'white'};
+  pts[11] = {count:5, color:'black'};
+  pts[12] = {count:5, color:'white'};
+  pts[16] = {count:3, color:'black'};
+  pts[18] = {count:5, color:'black'};
+  pts[23] = {count:2, color:'white'};
+  return {
+    points: pts,
+    bar: {white:0, black:0},
+    borneOff: {white:0, black:0}
+  };
 }
 
 // ===== CANVAS DRAWING =====
@@ -1026,944 +1070,1085 @@ const COLS = 13; // 6 + bar + 6
 const ROWS = 2;
 
 function initCanvas() {
-canvas = document.getElementById('boardCanvas');
-ctx = canvas.getContext('2d');
-const container = document.getElementById('boardContainer');
-const maxW = Math.min(window.innerWidth - 32, 460);
-const maxH = Math.min(window.innerHeight - 240, 380);
-boardW = maxW;
-boardH = maxH;
-canvas.width = boardW;
-canvas.height = boardH;
-container.style.width = boardW + 'px';
-container.style.height = boardH + 'px';
+  canvas = document.getElementById('boardCanvas');
+  ctx = canvas.getContext('2d');
+  const container = document.getElementById('boardContainer');
+  const maxW = Math.min(window.innerWidth - 32, 460);
+  const maxH = Math.min(window.innerHeight - 240, 380);
+  boardW = maxW;
+  boardH = maxH;
+  canvas.width = boardW;
+  canvas.height = boardH;
+  container.style.width = boardW + 'px';
+  container.style.height = boardH + 'px';
 }
 
 function drawBoard() {
-if (!ctx || !gameState) return;
-const pts = gameState.points;
-const cw = boardW;
-const ch = boardH;
-const barW = cw * 0.08;
-const sideW = (cw - barW) / 2;
-const ptW = sideW / 6;
-const ptH = ch * 0.42;
-const pieceR = Math.min(ptW * 0.42, 18);
+  if (!ctx || !gameState) return;
+  const pts = gameState.points;
+  const cw = boardW;
+  const ch = boardH;
+  const barW = cw * 0.08;
+  const sideW = (cw - barW) / 2;
+  const ptW = sideW / 6;
+  const ptH = ch * 0.42;
+  const pieceR = Math.min(ptW * 0.42, 18);
 
-// Background
-ctx.fillStyle = '#1a3a2a';
-ctx.fillRect(0, 0, cw, ch);
+  // Background
+  ctx.fillStyle = '#1a3a2a';
+  ctx.fillRect(0, 0, cw, ch);
 
-// Draw points
-for (let i = 0; i < 24; i++) {
-drawPoint(i, ptW, ptH, barW, sideW, cw, ch, pieceR);
-}
+  // Draw points
+  for (let i = 0; i < 24; i++) {
+    drawPoint(i, ptW, ptH, barW, sideW, cw, ch, pieceR);
+  }
 
-// Draw pieces on points
-for (let i = 0; i < 24; i++) {
-drawPieces(i, pts[i], ptW, ptH, barW, sideW, cw, ch, pieceR);
-}
+  // Draw pieces on points
+  for (let i = 0; i < 24; i++) {
+    drawPieces(i, pts[i], ptW, ptH, barW, sideW, cw, ch, pieceR);
+  }
 
-// Bar
-ctx.fillStyle = '#0f2a1a';
-ctx.fillRect(sideW, 0, barW, ch);
-ctx.strokeStyle = '#2d4a3a';
-ctx.lineWidth = 1;
-ctx.strokeRect(sideW, 0, barW, ch);
+  // Bar
+  ctx.fillStyle = '#0f2a1a';
+  ctx.fillRect(sideW, 0, barW, ch);
+  ctx.strokeStyle = '#2d4a3a';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(sideW, 0, barW, ch);
 
-// Bar pieces
-const bar = gameState.bar;
-if (bar.white > 0) drawBarPieces('white', bar.white, sideW, barW, ch, pieceR);
-if (bar.black > 0) drawBarPieces('black', bar.black, sideW, barW, ch, pieceR);
+  // Bar pieces
+  const bar = gameState.bar;
+  if (bar.white > 0) drawBarPieces('white', bar.white, sideW, barW, ch, pieceR);
+  if (bar.black > 0) drawBarPieces('black', bar.black, sideW, barW, ch, pieceR);
 
-// Highlight valid moves
-if (selectedPoint >= 0) {
-highlightMoves(validMoves, ptW, ptH, barW, sideW, cw, ch, pieceR);
-}
+  // Highlight valid moves
+  if (selectedPoint >= 0) {
+    highlightMoves(validMoves, ptW, ptH, barW, sideW, cw, ch, pieceR);
+  }
 
-// Borne off indicators
-drawBorneOff(cw, ch, pieceR);
+  // Borne off indicators
+  drawBorneOff(cw, ch, pieceR);
 
-// Turn overlay if not my turn
-if (!isMyTurn) {
-ctx.fillStyle = 'rgba(0,0,0,0.15)';
-ctx.fillRect(0, 0, cw, ch);
-}
+  // Turn overlay if not my turn
+  if (!isMyTurn) {
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(0, 0, cw, ch);
+  }
 }
 
 function getPointPos(index, ptW, ptH, barW, sideW, cw, ch) {
-// Points 0-11: bottom row (right to left for white)
-// Points 12-23: top row (left to right for white)
-let x, y, dir;
-if (index < 12) {
-// bottom
-y = ch;
-dir = -1; // points go up
-if (index < 6) {
-// right side, indices 0-5 = cols 5-0 from right
-x = sideW + barW + (5 - index) * ptW + ptW/2;
-} else {
-// left side, indices 6-11 = cols 5-0 from left
-x = (11 - index) * ptW + ptW/2;
-}
-} else {
-// top
-y = 0;
-dir = 1; // points go down
-if (index < 18) {
-// left side, indices 12-17 = cols 0-5 from left
-x = (index - 12) * ptW + ptW/2;
-} else {
-// right side, indices 18-23 = cols 0-5 from right
-x = sideW + barW + (index - 18) * ptW + ptW/2;
-}
-}
-return {x, y, dir};
+  // Points 0-11: bottom row (right to left for white)
+  // Points 12-23: top row (left to right for white)
+  let x, y, dir;
+  if (index < 12) {
+    // bottom
+    y = ch;
+    dir = -1; // points go up
+    if (index < 6) {
+      // right side, indices 0-5 = cols 5-0 from right
+      x = sideW + barW + (5 - index) * ptW + ptW/2;
+    } else {
+      // left side, indices 6-11 = cols 5-0 from left
+      x = (11 - index) * ptW + ptW/2;
+    }
+  } else {
+    // top
+    y = 0;
+    dir = 1; // points go down
+    if (index < 18) {
+      // left side, indices 12-17 = cols 0-5 from left
+      x = (index - 12) * ptW + ptW/2;
+    } else {
+      // right side, indices 18-23 = cols 0-5 from right
+      x = sideW + barW + (index - 18) * ptW + ptW/2;
+    }
+  }
+  return {x, y, dir};
 }
 
 function drawPoint(index, ptW, ptH, barW, sideW, cw, ch, pieceR) {
-const {x, y, dir} = getPointPos(index, ptW, ptH, barW, sideW, cw, ch);
-const isSelected = index === selectedPoint;
-const color = index % 2 === 0 ? '#8b5e3c' : '#2d6a4f';
+  const {x, y, dir} = getPointPos(index, ptW, ptH, barW, sideW, cw, ch);
+  const isSelected = index === selectedPoint;
+  const color = index % 2 === 0 ? '#8b5e3c' : '#2d6a4f';
 
-ctx.beginPath();
-ctx.moveTo(x - ptW/2 + 2, y);
-ctx.lineTo(x + ptW/2 - 2, y);
-ctx.lineTo(x, y + dir * ptH);
-ctx.closePath();
+  ctx.beginPath();
+  ctx.moveTo(x - ptW/2 + 2, y);
+  ctx.lineTo(x + ptW/2 - 2, y);
+  ctx.lineTo(x, y + dir * ptH);
+  ctx.closePath();
 
-if (isSelected) {
-ctx.fillStyle = 'rgba(245,197,24,0.4)';
-} else {
-ctx.fillStyle = color;
-}
-ctx.fill();
+  if (isSelected) {
+    ctx.fillStyle = 'rgba(245,197,24,0.4)';
+  } else {
+    ctx.fillStyle = color;
+  }
+  ctx.fill();
 
-// Point number (small)
-ctx.fillStyle = 'rgba(255,255,255,0.25)';
-ctx.font = `${Math.max(8, ptW * 0.25)}px Vazirmatn`;
-ctx.textAlign = 'center';
-const numY = y + dir * (ptH + 12 * dir);
-ctx.fillText(index + 1, x, numY);
+  // Point number (small)
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.font = `${Math.max(8, ptW * 0.25)}px Vazirmatn`;
+  ctx.textAlign = 'center';
+  const numY = y + dir * (ptH + 12 * dir);
+  ctx.fillText(index + 1, x, numY);
 }
 
 function drawPieces(index, point, ptW, ptH, barW, sideW, cw, ch, pieceR) {
-if (!point || point.count === 0) return;
-const {x, y, dir} = getPointPos(index, ptW, ptH, barW, sideW, cw, ch);
-const maxStack = 5;
-const count = point.count;
-const color = point.color;
+  if (!point || point.count === 0) return;
+  const {x, y, dir} = getPointPos(index, ptW, ptH, barW, sideW, cw, ch);
+  const maxStack = 5;
+  const count = point.count;
+  const color = point.color;
 
-for (let i = 0; i < Math.min(count, maxStack); i++) {
-const py = y + dir * (pieceR + i * pieceR * 2 + i * 2 + pieceR * 0.3);
-drawPiece(x, py, pieceR, color, index === selectedPoint && i === count - 1);
-}
+  for (let i = 0; i < Math.min(count, maxStack); i++) {
+    const py = y + dir * (pieceR + i * pieceR * 2 + i * 2 + pieceR * 0.3);
+    drawPiece(x, py, pieceR, color, index === selectedPoint && i === count - 1);
+  }
 
-if (count > maxStack) {
-const py = y + dir * (pieceR + (maxStack-1) * pieceR * 2 + pieceR * 0.3);
-ctx.fillStyle = 'rgba(255,255,255,0.9)';
-ctx.font = `bold ${pieceR * 0.9}px Vazirmatn`;
-ctx.textAlign = 'center';
-ctx.textBaseline = 'middle';
-ctx.fillText(count, x, py);
-ctx.textBaseline = 'alphabetic';
-}
+  if (count > maxStack) {
+    const py = y + dir * (pieceR + (maxStack-1) * pieceR * 2 + pieceR * 0.3);
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = `bold ${pieceR * 0.9}px Vazirmatn`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(count, x, py);
+    ctx.textBaseline = 'alphabetic';
+  }
 }
 
 function drawPiece(x, y, r, color, highlight) {
-ctx.beginPath();
-ctx.arc(x, y, r, 0, Math.PI * 2);
-if (color === 'white') {
-const g = ctx.createRadialGradient(x-r*0.3, y-r*0.3, 0, x, y, r);
-g.addColorStop(0, '#fff8e1');
-g.addColorStop(1, '#c8a96e');
-ctx.fillStyle = g;
-} else {
-const g = ctx.createRadialGradient(x-r*0.3, y-r*0.3, 0, x, y, r);
-g.addColorStop(0, '#3a3a5e');
-g.addColorStop(1, '#0d0d1a');
-ctx.fillStyle = g;
-}
-ctx.fill();
-ctx.strokeStyle = highlight ? '#f5c518' : (color === 'white' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.15)');
-ctx.lineWidth = highlight ? 2.5 : 1.5;
-ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  if (color === 'white') {
+    const g = ctx.createRadialGradient(x-r*0.3, y-r*0.3, 0, x, y, r);
+    g.addColorStop(0, '#fff8e1');
+    g.addColorStop(1, '#c8a96e');
+    ctx.fillStyle = g;
+  } else {
+    const g = ctx.createRadialGradient(x-r*0.3, y-r*0.3, 0, x, y, r);
+    g.addColorStop(0, '#3a3a5e');
+    g.addColorStop(1, '#0d0d1a');
+    ctx.fillStyle = g;
+  }
+  ctx.fill();
+  ctx.strokeStyle = highlight ? '#f5c518' : (color === 'white' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.15)');
+  ctx.lineWidth = highlight ? 2.5 : 1.5;
+  ctx.stroke();
 }
 
 function drawBarPieces(color, count, sideW, barW, ch, pieceR) {
-const x = sideW + barW / 2;
-const baseY = color === 'white' ? ch * 0.75 : ch * 0.25;
-for (let i = 0; i < Math.min(count, 4); i++) {
-const y = baseY + (color === 'white' ? -i : i) * pieceR * 2.2;
-drawPiece(x, y, pieceR * 0.9, color, false);
-}
+  const x = sideW + barW / 2;
+  const baseY = color === 'white' ? ch * 0.75 : ch * 0.25;
+  for (let i = 0; i < Math.min(count, 4); i++) {
+    const y = baseY + (color === 'white' ? -i : i) * pieceR * 2.2;
+    drawPiece(x, y, pieceR * 0.9, color, false);
+  }
 }
 
 function highlightMoves(moves, ptW, ptH, barW, sideW, cw, ch, pieceR) {
-moves.forEach(to => {
-if (to === 'bear-off') {
-// highlight borne-off area
-ctx.fillStyle = 'rgba(46,204,113,0.3)';
-ctx.fillRect(cw - 20, 0, 20, ch);
-return;
-}
-const {x, y, dir} = getPointPos(to, ptW, ptH, barW, sideW, cw, ch);
-ctx.beginPath();
-ctx.arc(x, y + dir * (pieceR + 2), pieceR * 1.3, 0, Math.PI * 2);
-ctx.fillStyle = 'rgba(46,204,113,0.4)';
-ctx.fill();
-ctx.strokeStyle = '#2ecc71';
-ctx.lineWidth = 2;
-ctx.stroke();
-});
+  moves.forEach(to => {
+    if (to === 'bear-off') {
+      // highlight borne-off area
+      ctx.fillStyle = 'rgba(46,204,113,0.3)';
+      ctx.fillRect(cw - 20, 0, 20, ch);
+      return;
+    }
+    const {x, y, dir} = getPointPos(to, ptW, ptH, barW, sideW, cw, ch);
+    ctx.beginPath();
+    ctx.arc(x, y + dir * (pieceR + 2), pieceR * 1.3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(46,204,113,0.4)';
+    ctx.fill();
+    ctx.strokeStyle = '#2ecc71';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
 }
 
 function drawBorneOff(cw, ch) {
-const bo = gameState.borneOff;
-// small indicators on sides
-ctx.fillStyle = 'rgba(245,197,24,0.8)';
-ctx.font = 'bold 11px Vazirmatn';
-ctx.textAlign = 'right';
-ctx.fillText(`⭐${bo.white}`, cw - 4, ch - 8);
-ctx.fillText(`⭐${bo.black}`, cw - 4, 18);
+  const bo = gameState.borneOff;
+  // small indicators on sides
+  ctx.fillStyle = 'rgba(245,197,24,0.8)';
+  ctx.font = 'bold 11px Vazirmatn';
+  ctx.textAlign = 'right';
+  ctx.fillText(`⭐${bo.white}`, cw - 4, ch - 8);
+  ctx.fillText(`⭐${bo.black}`, cw - 4, 18);
 }
 
 // ===== CANVAS CLICK =====
 function onCanvasClick(e) {
-if (!isMyTurn || diceValues.length === 0) return;
-const rect = canvas.getBoundingClientRect();
-const scaleX = canvas.width / rect.width;
-const scaleY = canvas.height / rect.height;
-const mx = (e.clientX - rect.left) * scaleX;
-const my = (e.clientY - rect.top) * scaleY;
+  if (!isMyTurn || diceValues.length === 0) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
 
-const barW = boardW * 0.08;
-const sideW = (boardW - barW) / 2;
-const ptW = sideW / 6;
+  const barW = boardW * 0.08;
+  const sideW = (boardW - barW) / 2;
+  const ptW = sideW / 6;
 
-// Check if clicking bar first
-if (gameState.bar[myColor] > 0) {
-// must move from bar - check if clicking a valid point
-if (selectedPoint === -2) {
-// already selected bar, find target
-const clickedPt = getClickedPoint(mx, my, ptW, boardH * 0.42, barW, sideW);
-if (clickedPt >= 0 && validMoves.includes(clickedPt)) {
-doMove(-2, clickedPt);
-}
-} else {
-selectedPoint = -2;
-validMoves = getBarMoves();
-document.getElementById('selectedHint').textContent = 'From bar → select target point';
-drawBoard();
-}
-return;
-}
+  // Check if clicking bar first
+  if (gameState.bar[myColor] > 0) {
+    // must move from bar - check if clicking a valid point
+    if (selectedPoint === -2) {
+      // already selected bar, find target
+      const clickedPt = getClickedPoint(mx, my, ptW, boardH * 0.42, barW, sideW);
+      if (clickedPt >= 0 && validMoves.includes(clickedPt)) {
+        doMove(-2, clickedPt);
+      }
+    } else {
+      selectedPoint = -2;
+      validMoves = getBarMoves();
+      document.getElementById('selectedHint').textContent = 'From bar → select target point';
+      drawBoard();
+    }
+    return;
+  }
 
-const clickedPt = getClickedPoint(mx, my, ptW, boardH * 0.42, barW, sideW);
+  const clickedPt = getClickedPoint(mx, my, ptW, boardH * 0.42, barW, sideW);
 
-if (clickedPt < 0) {
-selectedPoint = -1;
-validMoves = [];
-document.getElementById('selectedHint').textContent = '';
-drawBoard();
-return;
-}
+  if (clickedPt < 0) {
+    selectedPoint = -1;
+    validMoves = [];
+    document.getElementById('selectedHint').textContent = '';
+    drawBoard();
+    return;
+  }
 
-if (selectedPoint >= 0) {
-if (validMoves.includes(clickedPt)) {
-doMove(selectedPoint, clickedPt);
-} else if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
-selectedPoint = clickedPt;
-validMoves = getValidMovesFrom(clickedPt);
-document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
-drawBoard();
-} else {
-selectedPoint = -1;
-validMoves = [];
-document.getElementById('selectedHint').textContent = '';
-drawBoard();
-}
-} else {
-if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
-selectedPoint = clickedPt;
-validMoves = getValidMovesFrom(clickedPt);
-document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
-drawBoard();
-}
-}
+  if (selectedPoint >= 0) {
+    if (validMoves.includes(clickedPt)) {
+      doMove(selectedPoint, clickedPt);
+    } else if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
+      selectedPoint = clickedPt;
+      validMoves = getValidMovesFrom(clickedPt);
+      document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
+      drawBoard();
+    } else {
+      selectedPoint = -1;
+      validMoves = [];
+      document.getElementById('selectedHint').textContent = '';
+      drawBoard();
+    }
+  } else {
+    if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
+      selectedPoint = clickedPt;
+      validMoves = getValidMovesFrom(clickedPt);
+      document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
+      drawBoard();
+    }
+  }
 }
 
 function getClickedPoint(mx, my, ptW, ptH, barW, sideW) {
-const ch = boardH;
-const cw = boardW;
-for (let i = 0; i < 24; i++) {
-const {x, y, dir} = getPointPos(i, ptW, ptH, barW, sideW, cw, ch);
-// Check if within triangle area
-const dy = Math.abs(my - y);
-const maxDx = (ptW/2) * (1 - dy/ptH);
-if (dy < ptH && Math.abs(mx - x) < maxDx + ptW*0.1) {
-return i;
-}
-}
-return -1;
+  const ch = boardH;
+  const cw = boardW;
+  for (let i = 0; i < 24; i++) {
+    const {x, y, dir} = getPointPos(i, ptW, ptH, barW, sideW, cw, ch);
+    // Check if within triangle area
+    const dy = Math.abs(my - y);
+    const maxDx = (ptW/2) * (1 - dy/ptH);
+    if (dy < ptH && Math.abs(mx - x) < maxDx + ptW*0.1) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 // ===== BACKGAMMON LOGIC =====
 function getValidMovesFrom(from) {
-const moves = [];
-const remainingDice = getRemainingDice();
+  const moves = [];
+  const remainingDice = getRemainingDice();
 
-for (const die of new Set(remainingDice)) {
-const to = myColor === 'white' ? from - die : from + die;
+  for (const die of new Set(remainingDice)) {
+    const to = myColor === 'white' ? from - die : from + die;
 
-// Bear off
-if (myColor === 'white' && to < 0 && canBearOff('white')) {
-moves.push('bear-off');
-continue;
-}
-if (myColor === 'black' && to > 23 && canBearOff('black')) {
-moves.push('bear-off');
-continue;
-}
+    // Bear off
+    if (myColor === 'white' && to < 0 && canBearOff('white')) {
+      moves.push('bear-off');
+      continue;
+    }
+    if (myColor === 'black' && to > 23 && canBearOff('black')) {
+      moves.push('bear-off');
+      continue;
+    }
 
-if (to < 0 || to > 23) continue;
+    if (to < 0 || to > 23) continue;
 
-const dest = gameState.points[to];
-if (!dest || dest.count === 0 || dest.color === myColor || dest.count === 1) {
-moves.push(to);
-}
-}
-return [...new Set(moves)];
+    const dest = gameState.points[to];
+    if (!dest || dest.count === 0 || dest.color === myColor || dest.count === 1) {
+      moves.push(to);
+    }
+  }
+  return [...new Set(moves)];
 }
 
 function getBarMoves() {
-const moves = [];
-const remainingDice = getRemainingDice();
-for (const die of new Set(remainingDice)) {
-const to = myColor === 'white' ? 24 - die : die - 1;
-if (to >= 0 && to < 24) {
-const dest = gameState.points[to];
-if (!dest || dest.count === 0 || dest.color === myColor || dest.count === 1) {
-moves.push(to);
-}
-}
-}
-return [...new Set(moves)];
+  const moves = [];
+  const remainingDice = getRemainingDice();
+  for (const die of new Set(remainingDice)) {
+    const to = myColor === 'white' ? 24 - die : die - 1;
+    if (to >= 0 && to < 24) {
+      const dest = gameState.points[to];
+      if (!dest || dest.count === 0 || dest.color === myColor || dest.count === 1) {
+        moves.push(to);
+      }
+    }
+  }
+  return [...new Set(moves)];
 }
 
 function getRemainingDice() {
-return diceValues.filter((_, i) => !diceUsed[i]);
+  return diceValues.filter((_, i) => !diceUsed[i]);
 }
 
 function canBearOff(color) {
-// All pieces must be in home board
-const homeStart = color === 'white' ? 0 : 18;
-const homeEnd = color === 'white' ? 5 : 23;
-let outsideHome = 0;
-for (let i = 0; i < 24; i++) {
-if (i >= homeStart && i <= homeEnd) continue;
-const pt = gameState.points[i];
-if (pt && pt.color === color) outsideHome += pt.count;
-}
-outsideHome += gameState.bar[color];
-return outsideHome === 0;
+  // All pieces must be in home board
+  const homeStart = color === 'white' ? 0 : 18;
+  const homeEnd = color === 'white' ? 5 : 23;
+  let outsideHome = 0;
+  for (let i = 0; i < 24; i++) {
+    if (i >= homeStart && i <= homeEnd) continue;
+    const pt = gameState.points[i];
+    if (pt && pt.color === color) outsideHome += pt.count;
+  }
+  outsideHome += gameState.bar[color];
+  return outsideHome === 0;
 }
 
 function doMove(from, to) {
-const remainingDice = getRemainingDice();
+  const remainingDice = getRemainingDice();
 
-let dieUsed;
-if (from === -2) {
-// from bar
-dieUsed = myColor === 'white' ? 24 - to : to + 1;
-} else if (to === 'bear-off') {
-dieUsed = myColor === 'white' ? from + 1 : 24 - from;
-} else {
-dieUsed = Math.abs(to - from);
-}
+  let dieUsed;
+  if (from === -2) {
+    // from bar
+    dieUsed = myColor === 'white' ? 24 - to : to + 1;
+  } else if (to === 'bear-off') {
+    dieUsed = myColor === 'white' ? from + 1 : 24 - from;
+  } else {
+    dieUsed = Math.abs(to - from);
+  }
 
-// Find and mark die as used
-const dieIdx = diceValues.findIndex((v, i) => !diceUsed[i] && v === dieUsed);
-if (dieIdx >= 0) {
-diceUsed = [...diceUsed]; // clone to avoid reference issues
-diceUsed[dieIdx] = true;
-}
+  // Find and mark die as used
+  const dieIdx = diceValues.findIndex((v, i) => !diceUsed[i] && v === dieUsed);
+  if (dieIdx >= 0) {
+    diceUsed = [...diceUsed]; // clone to avoid reference issues
+    diceUsed[dieIdx] = true;
+  }
 
-// Execute move
-if (from >= 0) {
-gameState.points[from].count--;
-if (gameState.points[from].count === 0) gameState.points[from].color = null;
-} else if (from === -2) {
-gameState.bar[myColor]--;
-}
+  // Execute move
+  if (from >= 0) {
+    gameState.points[from].count--;
+    if (gameState.points[from].count === 0) gameState.points[from].color = null;
+  } else if (from === -2) {
+    gameState.bar[myColor]--;
+  }
 
-if (to === 'bear-off') {
-gameState.borneOff[myColor]++;
-} else {
-const dest = gameState.points[to];
-if (dest && dest.color && dest.color !== myColor && dest.count === 1) {
-// Hit!
-const oppColor = myColor === 'white' ? 'black' : 'white';
-gameState.bar[oppColor]++;
-gameState.points[to] = {count: 1, color: myColor};
-showToast('💥 Hit!');
-} else {
-if (!dest || dest.count === 0) {
-gameState.points[to] = {count: 1, color: myColor};
-} else {
-gameState.points[to].count++;
-}
-}
-}
+  if (to === 'bear-off') {
+    gameState.borneOff[myColor]++;
+  } else {
+    const dest = gameState.points[to];
+    if (dest && dest.color && dest.color !== myColor && dest.count === 1) {
+      // Hit!
+      const oppColor = myColor === 'white' ? 'black' : 'white';
+      gameState.bar[oppColor]++;
+      gameState.points[to] = {count: 1, color: myColor};
+      showToast('💥 Hit!');
+    } else {
+      if (!dest || dest.count === 0) {
+        gameState.points[to] = {count: 1, color: myColor};
+      } else {
+        gameState.points[to].count++;
+      }
+    }
+  }
 
-selectedPoint = -1;
-validMoves = [];
-document.getElementById('selectedHint').textContent = '';
+  selectedPoint = -1;
+  validMoves = [];
+  document.getElementById('selectedHint').textContent = '';
 
-updateDiceDisplay();
-drawBoard();
+  updateDiceDisplay();
+  drawBoard();
 
-// Check win
-if (gameState.borneOff[myColor] >= 15) {
-endGame(true);
-return;
-}
+  // Check win
+  if (gameState.borneOff[myColor] >= 15) {
+    endGame(true);
+    return;
+  }
 
-// Auto-pass if no moves left
-const remaining = getRemainingDice();
-if (remaining.length === 0) {
-setTimeout(() => passTurn(), 600);
-} else {
-document.getElementById('passBtn').disabled = false;
-// Check if any valid moves remain
-const hasMove = checkAnyValidMove();
-if (!hasMove) {
-showToast('No valid moves!');
-setTimeout(() => passTurn(), 1000);
-}
-}
+  // Auto-pass if no moves left
+  const remaining = getRemainingDice();
+  if (remaining.length === 0) {
+    setTimeout(() => passTurn(), 600);
+  } else {
+    document.getElementById('passBtn').disabled = false;
+    // Check if any valid moves remain
+    const hasMove = checkAnyValidMove();
+    if (!hasMove) {
+      showToast('No valid moves!');
+      setTimeout(() => passTurn(), 1000);
+    }
+  }
 }
 
 // ===== DICE =====
 const diceFaces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
 
 function rollDice() {
-if (!isMyTurn) return;
-document.getElementById('rollBtn').disabled = true;
+  // Initial roll to decide who goes first
+  if (window._initialRoll) {
+    window._initialRoll = false;
+    const myRoll = Math.floor(Math.random() * 6) + 1;
+    const oppRoll = Math.floor(Math.random() * 6) + 1;
+    
+    const area = document.getElementById('diceDisplay');
+    area.innerHTML = `<div class="die">${diceFaces[myRoll-1]}</div><span style="color:var(--text2);padding:0 4px">vs</span><div class="die" style="background:#2a2a4a;color:#f5c518">${diceFaces[oppRoll-1]}</div>`;
+    
+    if (myRoll === oppRoll) {
+      showToast('Tie! Roll again!');
+      setTimeout(() => { window._initialRoll = true; }, 1500);
+      return;
+    }
+    
+    isMyTurn = myRoll < oppRoll; // lower number goes first
+    const msg = isMyTurn ? 
+      `You rolled ${myRoll}, opponent rolled ${oppRoll} — You go first! 🎲` :
+      `You rolled ${myRoll}, opponent rolled ${oppRoll} — Opponent goes first!`;
+    
+    addChatMessage('system', null, msg);
+    showToast(isMyTurn ? 'You go first! 🎲' : 'Opponent goes first!');
+    
+    setTimeout(() => {
+      area.innerHTML = '<div class="die" id="die1">⚀</div><div class="die" id="die2">⚀</div>';
+      document.getElementById('rollBtn').textContent = '🎲 Roll Dice';
+      updateTurnIndicator();
+      document.getElementById('rollBtn').disabled = !isMyTurn;
+      if (!isMyTurn) simulateOpponentTurn();
+    }, 2000);
+    return;
+  }
+  
+  if (!isMyTurn) return;
+  document.getElementById('rollBtn').disabled = true;
 
-const d1 = Math.floor(Math.random() * 6) + 1;
-const d2 = Math.floor(Math.random() * 6) + 1;
+  const d1 = Math.floor(Math.random() * 6) + 1;
+  const d2 = Math.floor(Math.random() * 6) + 1;
 
-if (d1 === d2) {
-diceValues = [d1, d1, d1, d1];
-diceUsed = [false, false, false, false];
-} else {
-diceValues = [d1, d2];
-diceUsed = [false, false];
-}
+  if (d1 === d2) {
+    diceValues = [d1, d1, d1, d1];
+    diceUsed = [false, false, false, false];
+  } else {
+    diceValues = [d1, d2];
+    diceUsed = [false, false];
+  }
 
-// Animate
-const die1 = document.getElementById('die1');
-const die2 = document.getElementById('die2');
-die1.classList.add('rolling');
-die2.classList.add('rolling');
-setTimeout(() => {
-die1.classList.remove('rolling');
-die2.classList.remove('rolling');
-updateDiceDisplay();
-}, 500);
+  // Animate
+  const die1 = document.getElementById('die1');
+  const die2 = document.getElementById('die2');
+  die1.classList.add('rolling');
+  die2.classList.add('rolling');
+  setTimeout(() => {
+    die1.classList.remove('rolling');
+    die2.classList.remove('rolling');
+    updateDiceDisplay();
+  }, 500);
 
-document.getElementById('passBtn').disabled = false;
+  document.getElementById('passBtn').disabled = false;
 
-setTimeout(() => {
-drawBoard();
-const hasMove = checkAnyValidMove();
-if (!hasMove) {
-showToast('No valid moves!');
-setTimeout(() => passTurn(), 1200);
-} else {
-showToast('Your turn! Pick a piece 🎲');
-}
-}, 550);
+  setTimeout(() => {
+    drawBoard();
+    const hasMove = checkAnyValidMove();
+    if (!hasMove) {
+      showToast('No valid moves!');
+      clearTurnTimer();
+      setTimeout(() => passTurn(), 1200);
+    } else {
+      startTurnTimer();
+    }
+  }, 550);
 }
 
 function checkAnyValidMove() {
-if (gameState.bar[myColor] > 0) {
-return getBarMoves().length > 0;
-}
-for (let i = 0; i < 24; i++) {
-const pt = gameState.points[i];
-if (pt && pt.color === myColor && pt.count > 0) {
-if (getValidMovesFrom(i).length > 0) return true;
-}
-}
-return false;
+  if (gameState.bar[myColor] > 0) {
+    return getBarMoves().length > 0;
+  }
+  for (let i = 0; i < 24; i++) {
+    const pt = gameState.points[i];
+    if (pt && pt.color === myColor && pt.count > 0) {
+      if (getValidMovesFrom(i).length > 0) return true;
+    }
+  }
+  return false;
 }
 
 function updateDiceDisplay() {
-const area = document.getElementById('diceDisplay');
-area.innerHTML = '';
-diceValues.forEach((v, i) => {
-const d = document.createElement('div');
-d.className = 'die' + (diceUsed[i] ? ' used' : '');
-d.textContent = diceFaces[v - 1];
-area.appendChild(d);
-});
+  const area = document.getElementById('diceDisplay');
+  area.innerHTML = '';
+  diceValues.forEach((v, i) => {
+    const d = document.createElement('div');
+    d.className = 'die' + (diceUsed[i] ? ' used' : '');
+    d.textContent = diceFaces[v - 1];
+    area.appendChild(d);
+  });
 }
 
 function passTurn() {
-isMyTurn = false;
-selectedPoint = -1;
-validMoves = [];
-diceValues = [];
-diceUsed = [];
-document.getElementById('rollBtn').disabled = true;
-document.getElementById('passBtn').disabled = true;
-document.getElementById('selectedHint').textContent = '';
-updateDiceDisplay();
-updateTurnIndicator();
-drawBoard();
+  clearTurnTimer();
+  isMyTurn = false;
+  selectedPoint = -1;
+  validMoves = [];
+  diceValues = [];
+  diceUsed = [];
+  document.getElementById('rollBtn').disabled = true;
+  document.getElementById('selectedHint').textContent = '';
+  updateDiceDisplay();
+  updateTurnIndicator();
+  drawBoard();
 
-// Simulate opponent turn
-simulateOpponentTurn();
+  if (isRealMultiplayer && socket) {
+    socket.emit('pass_turn', { roomId });
+  } else {
+    simulateOpponentTurn();
+  }
 }
 
 function simulateOpponentTurn() {
-const oppColor = myColor === 'white' ? 'black' : 'white';
-setTimeout(() => {
-// Roll for opponent
-const d1 = Math.floor(Math.random() * 6) + 1;
-const d2 = Math.floor(Math.random() * 6) + 1;
-const oppDice = d1 === d2 ? [d1,d1,d1,d1] : [d1,d2];
-let oppDiceUsed = oppDice.map(() => false);
+  const oppColor = myColor === 'white' ? 'black' : 'white';
+  setTimeout(() => {
+    // Roll for opponent - show dice
+    const d1 = Math.floor(Math.random() * 6) + 1;
+    const d2 = Math.floor(Math.random() * 6) + 1;
+    const oppDice = d1 === d2 ? [d1,d1,d1,d1] : [d1,d2];
+    let oppDiceUsed = oppDice.map(() => false);
 
-// Make moves for opponent (simplified AI)
-let movesLeft = [...oppDice];
-let attempts = 0;
+    // Show opponent dice
+    const area = document.getElementById('diceDisplay');
+    area.innerHTML = '';
+    oppDice.forEach(v => {
+      const d = document.createElement('div');
+      d.className = 'die';
+      d.style.background = '#2a2a4a';
+      d.style.color = '#f5c518';
+      d.textContent = diceFaces[v - 1];
+      area.appendChild(d);
+    });
 
-function makeOpponentMove() {
-if (movesLeft.length === 0 || attempts > 20) {
-// opponent done, my turn
-setTimeout(() => {
-isMyTurn = true;
-updateTurnIndicator();
-document.getElementById('rollBtn').disabled = false;
-drawBoard();
+    // Make moves for opponent (simplified AI)
+    let movesLeft = [...oppDice];
+    let attempts = 0;
 
-// Check if opponent won
-if (gameState.borneOff[oppColor] >= 15) {
-endGame(false);
-}
-}, 400);
-return;
-}
+    function makeOpponentMove() {
+      if (movesLeft.length === 0 || attempts > 20) {
+        // opponent done, my turn
+        setTimeout(() => {
+          isMyTurn = true;
+          updateTurnIndicator();
+          document.getElementById('rollBtn').disabled = false;
+          drawBoard();
 
-attempts++;
-const die = movesLeft[0];
+          // Check if opponent won
+          if (gameState.borneOff[oppColor] >= 15) {
+            endGame(false);
+          }
+        }, 400);
+        return;
+      }
 
-// Find best move for opponent
-let moved = false;
-if (gameState.bar[oppColor] > 0) {
-const to = oppColor === 'white' ? 24 - die : die - 1;
-if (to >= 0 && to < 24) {
-const dest = gameState.points[to];
-if (!dest || dest.count === 0 || dest.color === oppColor || dest.count === 1) {
-// do move
-gameState.bar[oppColor]--;
-if (dest && dest.color && dest.color !== oppColor && dest.count === 1) {
-gameState.bar[myColor]++;
-gameState.points[to] = {count:1, color:oppColor};
-} else {
-if (!dest || dest.count === 0) gameState.points[to] = {count:1, color:oppColor};
-else gameState.points[to].count++;
-}
-movesLeft.shift();
-moved = true;
-}
-}
-}
+      attempts++;
+      const die = movesLeft[0];
 
-if (!moved) {
-// find a piece to move
-const candidates = [];
-for (let i = 0; i < 24; i++) {
-const pt = gameState.points[i];
-if (pt && pt.color === oppColor && pt.count > 0) {
-const to = oppColor === 'white' ? i - die : i + die;
-if (oppColor === 'white' && to < 0 && canBearOffColor(oppColor)) {
-candidates.push({from:i, to:'bear-off', priority: 10});
-} else if (oppColor === 'black' && to > 23 && canBearOffColor(oppColor)) {
-candidates.push({from:i, to:'bear-off', priority: 10});
-} else if (to >= 0 && to < 24) {
-const dest = gameState.points[to];
-if (!dest || dest.count === 0 || dest.color === oppColor) {
-candidates.push({from:i, to, priority:1});
-} else if (dest.color !== oppColor && dest.count === 1) {
-candidates.push({from:i, to, priority:5}); // hit!
-}
-}
-}
-}
-if (candidates.length > 0) {
-candidates.sort((a,b) => b.priority - a.priority);
-const mv = candidates[0];
-gameState.points[mv.from].count--;
-if (gameState.points[mv.from].count === 0) gameState.points[mv.from].color = null;
-if (mv.to === 'bear-off') {
-gameState.borneOff[oppColor]++;
-} else {
-const dest = gameState.points[mv.to];
-if (dest && dest.color && dest.color !== oppColor && dest.count === 1) {
-gameState.bar[myColor]++;
-gameState.points[mv.to] = {count:1, color:oppColor};
-} else {
-if (!dest || dest.count === 0) gameState.points[mv.to] = {count:1, color:oppColor};
-else gameState.points[mv.to].count++;
-}
-}
-movesLeft.shift();
-moved = true;
-} else {
-movesLeft.shift(); // skip this die
-}
-}
+      // Find best move for opponent
+      let moved = false;
+      if (gameState.bar[oppColor] > 0) {
+        const to = oppColor === 'white' ? 24 - die : die - 1;
+        if (to >= 0 && to < 24) {
+          const dest = gameState.points[to];
+          if (!dest || dest.count === 0 || dest.color === oppColor || dest.count === 1) {
+            // do move
+            gameState.bar[oppColor]--;
+            if (dest && dest.color && dest.color !== oppColor && dest.count === 1) {
+              gameState.bar[myColor]++;
+              gameState.points[to] = {count:1, color:oppColor};
+            } else {
+              if (!dest || dest.count === 0) gameState.points[to] = {count:1, color:oppColor};
+              else gameState.points[to].count++;
+            }
+            movesLeft.shift();
+            moved = true;
+          }
+        }
+      }
 
-drawBoard();
-setTimeout(makeOpponentMove, moved ? 450 : 50);
-}
+      if (!moved) {
+        // find a piece to move
+        const candidates = [];
+        for (let i = 0; i < 24; i++) {
+          const pt = gameState.points[i];
+          if (pt && pt.color === oppColor && pt.count > 0) {
+            const to = oppColor === 'white' ? i - die : i + die;
+            if (oppColor === 'white' && to < 0 && canBearOffColor(oppColor)) {
+              candidates.push({from:i, to:'bear-off', priority: 10});
+            } else if (oppColor === 'black' && to > 23 && canBearOffColor(oppColor)) {
+              candidates.push({from:i, to:'bear-off', priority: 10});
+            } else if (to >= 0 && to < 24) {
+              const dest = gameState.points[to];
+              if (!dest || dest.count === 0 || dest.color === oppColor) {
+                candidates.push({from:i, to, priority:1});
+              } else if (dest.color !== oppColor && dest.count === 1) {
+                candidates.push({from:i, to, priority:5}); // hit!
+              }
+            }
+          }
+        }
+        if (candidates.length > 0) {
+          candidates.sort((a,b) => b.priority - a.priority);
+          const mv = candidates[0];
+          gameState.points[mv.from].count--;
+          if (gameState.points[mv.from].count === 0) gameState.points[mv.from].color = null;
+          if (mv.to === 'bear-off') {
+            gameState.borneOff[oppColor]++;
+          } else {
+            const dest = gameState.points[mv.to];
+            if (dest && dest.color && dest.color !== oppColor && dest.count === 1) {
+              gameState.bar[myColor]++;
+              gameState.points[mv.to] = {count:1, color:oppColor};
+            } else {
+              if (!dest || dest.count === 0) gameState.points[mv.to] = {count:1, color:oppColor};
+              else gameState.points[mv.to].count++;
+            }
+          }
+          movesLeft.shift();
+          moved = true;
+        } else {
+          movesLeft.shift(); // skip this die
+        }
+      }
 
-drawBoard();
-setTimeout(makeOpponentMove, 600);
-}, 800);
+      drawBoard();
+      setTimeout(makeOpponentMove, moved ? 450 : 50);
+    }
+
+    drawBoard();
+    setTimeout(makeOpponentMove, 600);
+  }, 800);
 }
 
 function canBearOffColor(color) {
-const homeStart = color === 'white' ? 0 : 18;
-const homeEnd = color === 'white' ? 5 : 23;
-let outside = 0;
-for (let i = 0; i < 24; i++) {
-if (i >= homeStart && i <= homeEnd) continue;
-const pt = gameState.points[i];
-if (pt && pt.color === color) outside += pt.count;
-}
-outside += gameState.bar[color];
-return outside === 0;
+  const homeStart = color === 'white' ? 0 : 18;
+  const homeEnd = color === 'white' ? 5 : 23;
+  let outside = 0;
+  for (let i = 0; i < 24; i++) {
+    if (i >= homeStart && i <= homeEnd) continue;
+    const pt = gameState.points[i];
+    if (pt && pt.color === color) outside += pt.count;
+  }
+  outside += gameState.bar[color];
+  return outside === 0;
 }
 
 // ===== GAME FLOW =====
 function updateTurnIndicator() {
-const el = document.getElementById('turnIndicator');
-if (isMyTurn) {
-el.textContent = '🎲 Your turn! Roll dice';
-el.className = 'turn-indicator my-turn';
-} else {
-el.textContent = "⏳ Opponent's Turn...";
-el.className = 'turn-indicator opponent-turn';
-}
+  const el = document.getElementById('turnIndicator');
+  const score = myWins + ' — ' + oppWins + '  (First to 3)';
+  if (isMyTurn) {
+    el.textContent = '🎲 Your turn! Roll dice  |  ' + score;
+    el.className = 'turn-indicator my-turn';
+  } else {
+    el.textContent = "⏳ Opponent's turn...  |  " + score;
+    el.className = 'turn-indicator opponent-turn';
+  }
 }
 
 function endGame(iWon) {
-if (iWon) myWins++; else oppWins++;
+  if (iWon) myWins++; else oppWins++;
 
-setTimeout(() => {
-// Update scoreboard
-document.getElementById('myScore').textContent = myWins;
-document.getElementById('oppScore').textContent = oppWins;
+  setTimeout(() => {
+    // Update scoreboard
+    document.getElementById('myScore').textContent = myWins;
+    document.getElementById('oppScore').textContent = oppWins;
 
-// Check if match is over (first to 3)
-const matchOver = myWins >= 3 || oppWins >= 3;
+    // Check if match is over (first to 3)
+    const matchOver = myWins >= 3 || oppWins >= 3;
 
-document.getElementById('resultIcon').textContent = iWon ? '🏆' : '💔';
-document.getElementById('resultTitle').textContent = iWon ? 'You Won! 🎉' : 'You Lost 😔';
-document.getElementById('resultTitle').className = 'result-title ' + (iWon ? 'win' : 'lose');
+    document.getElementById('resultIcon').textContent = iWon ? '🏆' : '💔';
+    document.getElementById('resultTitle').textContent = iWon ? 'You Won! 🎉' : 'You Lost 😔';
+    document.getElementById('resultTitle').className = 'result-title ' + (iWon ? 'win' : 'lose');
 
-// Stars only change when match is fully over
-const starsEl = document.getElementById('resultStars');
-const rematchBtn = document.getElementById('rematchBtn');
+    // Stars only change when match is fully over
+    const starsEl = document.getElementById('resultStars');
+    const rematchBtn = document.getElementById('rematchBtn');
 
-if (isFreePlay) {
-starsEl.style.display = 'none';
-} else if (matchOver) {
-const change = myWins >= 3 ? selectedBet : -selectedBet;
-myStars += change;
-document.getElementById('resultStarsValue').textContent = (change > 0 ? '+' : '') + change + ' ⭐';
-document.getElementById('resultStarsValue').className = 'rs-value ' + (change > 0 ? 'win' : 'lose');
-starsEl.style.display = 'block';
-} else {
-starsEl.style.display = 'none';
-}
+    if (isFreePlay) {
+      starsEl.style.display = 'none';
+    } else if (matchOver) {
+      const change = myWins >= 3 ? selectedBet : -selectedBet;
+      myStars += change;
+      document.getElementById('resultStarsValue').textContent = (change > 0 ? '+' : '') + change + ' ⭐';
+      document.getElementById('resultStarsValue').className = 'rs-value ' + (change > 0 ? 'win' : 'lose');
+      starsEl.style.display = 'block';
+    } else {
+      starsEl.style.display = 'none';
+    }
 
-// Show rematch only if match not over
-rematchBtn.style.display = matchOver ? 'none' : 'block';
+    // Show rematch only if match not over
+    rematchBtn.style.display = matchOver ? 'none' : 'block';
 
-// Show match winner banner if over
-if (matchOver) {
-document.getElementById('resultTitle').textContent =
-myWins >= 3 ? '🏆 You won the match!' : '💔 You lost the match!';
-}
+    // Show match winner banner if over
+    if (matchOver) {
+      document.getElementById('resultTitle').textContent =
+        myWins >= 3 ? '🏆 You won the match!' : '💔 You lost the match!';
+    }
 
-showScreen('result');
-}, 800);
+    showScreen('result');
+  }, 800);
 }
 
 // ===== UI FLOW =====
 function showScreen(id) {
-document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-document.getElementById(id).classList.remove('hidden');
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
 }
 
 function goBack(to) {
-showScreen(to);
-if (to === 'lobby') {
-document.getElementById('myStars').textContent = myStars;
-}
+  showScreen(to);
+  if (to === 'lobby') {
+    document.getElementById('myStars').textContent = myStars;
+  }
 }
 
 function selectBet(amount) {
-selectedBet = amount;
-document.querySelectorAll('.bet-btn').forEach(b => {
-b.classList.toggle('active', parseInt(b.dataset.bet) === amount);
-});
+  selectedBet = amount;
+  document.querySelectorAll('.bet-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.bet) === amount);
+  });
 }
 
 function showRooms(mode) {
-playerName = document.getElementById('playerName').value.trim() || 'Player';
-isFreePlay = (mode === 'free');
-if (isFreePlay) selectedBet = 0;
-if (!isFreePlay && selectedBet === 0) selectedBet = 76;
+  playerName = document.getElementById('playerName').value.trim() || 'Player';
+  isFreePlay = (mode === 'free');
+  if (isFreePlay) selectedBet = 0;
+  if (!isFreePlay && selectedBet === 0) selectedBet = 76;
 
-document.getElementById('waitingBetDisplay').textContent = isFreePlay ? 'Free 🆓' : selectedBet + ' ⭐';
-document.getElementById('waitingOnline').textContent = '...';
-showScreen('matchmaking');
+  document.getElementById('waitingBetDisplay').textContent = isFreePlay ? 'Free 🆓' : selectedBet + ' ⭐';
+  document.getElementById('waitingOnline').textContent = 'Searching...';
+  showScreen('matchmaking');
 
-// Try real socket first, fallback to AI after 5s
-connectSocket();
+  connectSocket();
+  let matchFound = false;
 
-let matchFound = false;
+  function onConnect() {
+    socket.emit('join_queue', { name: playerName, bet: selectedBet, stars: myStars });
+    socket.emit('get_online');
+  }
 
-// Join real queue
-if (socket && socket.connected) {
-socket.emit('join_queue', { name: playerName, bet: selectedBet, stars: myStars });
-socket.emit('get_online');
-}
+  if (socket.connected) onConnect();
+  else socket.once('connect', onConnect);
 
-// Fallback to AI opponent after 5 seconds if no real match
-const fallbackTimer = setTimeout(() => {
-if (!matchFound) {
-isRealMultiplayer = false;
-const oppN = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-startGame(oppN);
-}
-}, 5000);
+  socket.once('match_found', () => { matchFound = true; });
 
-// If real match found, cancel fallback
-if (socket) {
-socket.once('match_found', () => {
-matchFound = true;
-clearTimeout(fallbackTimer);
-});
-}
+  if (isFreePlay) {
+    // Free: fallback AI after 5s
+    setTimeout(() => {
+      if (!matchFound) {
+        isRealMultiplayer = false;
+        if (socket) socket.emit('cancel_queue');
+        const oppN = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+        startGame(oppN);
+      }
+    }, 5000);
+  }
+  // Paid: no AI fallback - keep waiting
 }
 
 function generateRooms() {
-rooms = [];
-const count = Math.floor(Math.random() * 4) + 2;
-for (let i = 0; i < count; i++) {
-const bet = isFreePlay ? 0 : [76,152,304,760][Math.floor(Math.random() * 4)];
-const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-rooms.push({id: Math.random().toString(36).substr(2,8), name, bet, waiting: Math.random() > 0.5});
-}
-renderRooms();
-const onlineCount = Math.floor(Math.random() * 40) + 8;
-document.getElementById('onlineCount').textContent = onlineCount + ' Online';
+  rooms = [];
+  const count = Math.floor(Math.random() * 4) + 2;
+  for (let i = 0; i < count; i++) {
+    const bet = isFreePlay ? 0 : [76,152,304,760][Math.floor(Math.random() * 4)];
+    const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+    rooms.push({id: Math.random().toString(36).substr(2,8), name, bet, waiting: Math.random() > 0.5});
+  }
+  renderRooms();
+  const onlineCount = Math.floor(Math.random() * 40) + 8;
+  document.getElementById('onlineCount').textContent = onlineCount + ' Online';
 }
 
 function renderRooms() {
-const list = document.getElementById('roomsList');
-const filtered = isFreePlay ? rooms.filter(r => r.bet === 0) : rooms.filter(r => r.bet === selectedBet);
+  const list = document.getElementById('roomsList');
+  const filtered = isFreePlay ? rooms.filter(r => r.bet === 0) : rooms.filter(r => r.bet === selectedBet);
 
-if (filtered.length === 0) {
-// Auto-find opponent after a moment
-list.innerHTML = `
-<div class="empty-rooms">
-<div class="empty-icon">🔍</div>
-<div>Looking for opponents...</div>
-<div style="font-size:12px">Finding a match for you</div>
-</div>
-`;
-setTimeout(() => autoMatch(), 2000);
-return;
-}
+  if (filtered.length === 0) {
+    // Auto-find opponent after a moment
+    list.innerHTML = `
+      <div class="empty-rooms">
+        <div class="empty-icon">🔍</div>
+        <div>Looking for opponents...</div>
+        <div style="font-size:12px">Finding a match for you</div>
+      </div>
+    `;
+    setTimeout(() => autoMatch(), 2000);
+    return;
+  }
 
-list.innerHTML = filtered.map((r,i) => `
-<div class="room-card" style="animation-delay:${i*0.05}s" onclick="joinRoom('${r.id}','${r.name}')">
-<div class="room-left">
-<div class="room-avatar">${r.name[0]}</div>
-<div class="room-info">
-<div class="room-name">${r.name}</div>
-<div class="room-meta">${r.waiting ? '⏳ Waiting' : '🟢 Ready'}</div>
-</div>
-</div>
-<div class="room-right">
-<div class="room-bet">${r.bet === 0 ? '🆓 Free' : '⭐ ' + r.bet}</div>
-<div class="join-badge">Join</div>
-</div>
-</div>
-`).join('');
+  list.innerHTML = filtered.map((r,i) => `
+    <div class="room-card" style="animation-delay:${i*0.05}s" onclick="joinRoom('${r.id}','${r.name}')">
+      <div class="room-left">
+        <div class="room-avatar">${r.name[0]}</div>
+        <div class="room-info">
+          <div class="room-name">${r.name}</div>
+          <div class="room-meta">${r.waiting ? '⏳ Waiting' : '🟢 Ready'}</div>
+        </div>
+      </div>
+      <div class="room-right">
+        <div class="room-bet">${r.bet === 0 ? '🆓 Free' : '⭐ ' + r.bet}</div>
+        <div class="join-badge">Join</div>
+      </div>
+    </div>
+  `).join('');
 }
 
 function autoMatch() {
-const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-startGame(name);
+  const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+  startGame(name);
 }
 
 function joinRoom(id, oppNameParam) {
-roomId = id;
-startGame(oppNameParam);
+  roomId = id;
+  startGame(oppNameParam);
 }
 
 function createRoom() {
-playerName = document.getElementById('playerName').value.trim() || 'Player';
-if (myStars < selectedBet) {
-showToast('⭐ Not enough Stars!');
-return;
-}
-document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
-const online = Math.floor(Math.random() * 40) + 8;
-document.getElementById('waitingOnline').textContent = online + ' نفر Online';
-showScreen('matchmaking');
+  playerName = document.getElementById('playerName').value.trim() || 'Player';
+  if (myStars < selectedBet) {
+    showToast('⭐ Not enough Stars!');
+    return;
+  }
+  document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
+  const online = Math.floor(Math.random() * 40) + 8;
+  document.getElementById('waitingOnline').textContent = online + ' نفر Online';
+  showScreen('matchmaking');
 
-// Simulate finding opponent after 2-4 seconds
-const delay = 2000 + Math.random() * 2000;
-setTimeout(() => {
-const oppN = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-startGame(oppN);
-}, delay);
+  // Simulate finding opponent after 2-4 seconds
+  const delay = 2000 + Math.random() * 2000;
+  setTimeout(() => {
+    const oppN = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+    startGame(oppN);
+  }, delay);
 }
 
 function cancelSearch() {
-showScreen('lobby');
+  showScreen('lobby');
 }
 
 function startGame(oppN) {
-// Setup game
-gameState = initBoard();
-myColor = Math.random() > 0.5 ? 'white' : 'black';
-isMyTurn = myColor === 'white'; // white goes first
-diceValues = [];
-diceUsed = [];
-selectedPoint = -1;
-validMoves = [];
+  // Setup game
+  gameState = initBoard();
+  myColor = Math.random() > 0.5 ? 'white' : 'black';
+  isMyTurn = myColor === 'white'; // white goes first
+  diceValues = [];
+  diceUsed = [];
+  selectedPoint = -1;
+  validMoves = [];
 
-const oppColor = myColor === 'white' ? 'black' : 'white';
+  const oppColor = myColor === 'white' ? 'black' : 'white';
 
-// Update UI
-document.getElementById('myNameDisplay').textContent = playerName || 'Me';
-document.getElementById('myAvatar').textContent = (playerName || 'م')[0];
-document.getElementById('oppName').textContent = oppN;
-document.getElementById('oppAvatar').textContent = oppN[0];
-document.getElementById('potDisplay').textContent = (selectedBet * 2) + '⭐';
+  // Update UI
+  document.getElementById('myNameDisplay').textContent = playerName || 'Me';
+  document.getElementById('myAvatar').textContent = (playerName || 'P')[0];
+  document.getElementById('oppName').textContent = oppN;
+  document.getElementById('oppAvatar').textContent = oppN[0];
+  document.getElementById('potDisplay').textContent = isFreePlay ? 'Free' : (selectedBet * 2) + '⭐';
 
-// Deduct bet only if not free
-if (!isFreePlay && selectedBet > 0) {
-myStars -= selectedBet;
-}
+  // Show score reset
+  myWins = 0; oppWins = 0;
 
-showScreen('game');
+  showScreen('game');
 
-setTimeout(() => {
-initCanvas();
-canvas.addEventListener('click', onCanvasClick);
-canvas.addEventListener('touchend', (e) => {
-e.preventDefault();
-const t = e.changedTouches[0];
-onCanvasClick(t);
-});
-drawBoard();
-updateTurnIndicator();
+  setTimeout(() => {
+    initCanvas();
+    canvas.addEventListener('click', onCanvasClick);
+    canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      onCanvasClick(t);
+    });
+    drawBoard();
+    updateTurnIndicator();
 
-addChatMessage('system', null, `Game started! ${playerName} (${myColor === 'white' ? 'سفید' : 'سیاه'}) vs ${oppN}`);
+    addChatMessage('system', null, `Game started! ${playerName} (${myColor === 'white' ? 'سفید' : 'سیاه'}) vs ${oppN}`);
 
-document.getElementById('rollBtn').disabled = !isMyTurn;
+    document.getElementById('rollBtn').disabled = !isMyTurn;
 
-if (!isMyTurn) {
-// Opponent goes first
-setTimeout(() => simulateOpponentTurn(), 1000);
-}
-}, 100);
+    if (!isMyTurn) {
+      // Opponent goes first
+      setTimeout(() => simulateOpponentTurn(), 1000);
+    }
+  }, 100);
 }
 
 function playAgain() {
-myWins = 0;
-oppWins = 0;
-showScreen('lobby');
+  myWins = 0;
+  oppWins = 0;
+  showScreen('lobby');
 }
 
 function requestRematch() {
-// Start new game round directly
-myWins = myWins; // keep scores
-oppWins = oppWins;
-const oppN = document.getElementById('oppName').textContent;
-startGame(oppN);
+  // Start new game round directly
+  myWins = myWins; // keep scores
+  oppWins = oppWins;
+  const oppN = document.getElementById('oppName').textContent;
+  startGame(oppN);
 }
 
 // ===== CHAT =====
 function toggleChat() {
-const chatArea = document.getElementById('chatArea');
-chatArea.classList.toggle('open');
-if (chatArea.classList.contains('open')) {
-document.getElementById('chatInput').focus();
-}
+  const chatArea = document.getElementById('chatArea');
+  chatArea.classList.toggle('open');
+  if (chatArea.classList.contains('open')) {
+    document.getElementById('chatInput').focus();
+  }
 }
 
 function addChatMessage(type, name, text) {
-const msgs = document.getElementById('chatMessages');
-const div = document.createElement('div');
-div.className = 'chat-msg ' + type;
-if (type !== 'system') {
-div.innerHTML = `<span class="msg-name">${name}:</span>${text}`;
-} else {
-div.textContent = text;
-}
-msgs.appendChild(div);
-msgs.scrollTop = msgs.scrollHeight;
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + type;
+  if (type !== 'system') {
+    div.innerHTML = `<span class="msg-name">${name}:</span>${text}`;
+  } else {
+    div.textContent = text;
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 function sendChat() {
-const input = document.getElementById('chatInput');
-const text = input.value.trim();
-if (!text) return;
-addChatMessage('me', playerName || 'Me', text);
-input.value = '';
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addChatMessage('me', playerName || 'Me', text);
+  input.value = '';
 
-// Simulate opponent response sometimes
-if (Math.random() > 0.6) {
-const responses = ['😄','Nice!','Well played!','Hmm...','🎲','Good game!','Not bad!',"Let's see 😏"];
-const oppN = document.getElementById('oppName').textContent;
-setTimeout(() => {
-addChatMessage('opp', oppN, responses[Math.floor(Math.random() * responses.length)]);
-}, 800 + Math.random() * 1500);
-}
+  // Simulate opponent response sometimes
+  if (Math.random() > 0.6) {
+    const responses = ['😄','Nice!','Well played!','Hmm...','🎲','Good game!','Not bad!',"Let's see 😏"];
+    const oppN = document.getElementById('oppName').textContent;
+    setTimeout(() => {
+      addChatMessage('opp', oppN, responses[Math.floor(Math.random() * responses.length)]);
+    }, 800 + Math.random() * 1500);
+  }
 }
 
 document.addEventListener('keydown', (e) => {
-if (e.key === 'Enter' && document.getElementById('chatInput') === document.activeElement) {
-sendChat();
-}
+  if (e.key === 'Enter' && document.getElementById('chatInput') === document.activeElement) {
+    sendChat();
+  }
 });
 
 // ===== TOAST =====
 function showToast(msg) {
-const t = document.getElementById('toast');
-t.textContent = msg;
-t.classList.add('show');
-setTimeout(() => t.classList.remove('show'), 2200);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 // ===== INIT =====
 document.getElementById('playerName').addEventListener('input', (e) => {
-playerName = e.target.value;
+  playerName = e.target.value;
 });
+
+
+// ===== NAME VALIDATION =====
+function findOpponent() {
+  const name = document.getElementById('playerName').value.trim();
+  if (!name || name.length < 2) {
+    showToast('⚠️ Please enter your name first!');
+    document.getElementById('playerName').focus();
+    return;
+  }
+  if (selectedBet === 0) {
+    showToast('⚠️ Please select a bet amount!');
+    return;
+  }
+  showRooms('paid');
+}
+
+// ===== INVITE / PLAY WITH FRIEND =====
+let friendBet = 0;
+
+function selectBet2(amount) {
+  friendBet = amount;
+  document.querySelectorAll('[data-bet2]').forEach(b => {
+    const isActive = parseInt(b.dataset.bet2) === amount;
+    b.style.borderColor = isActive ? 'var(--accent)' : 'var(--border)';
+    b.style.background = isActive ? 'rgba(245,197,24,0.12)' : 'var(--surface2)';
+  });
+}
+
+function showInvite() {
+  const name = document.getElementById('playerName').value.trim();
+  if (!name || name.length < 2) {
+    showToast('⚠️ Please enter your name first!');
+    return;
+  }
+  document.getElementById('friendUsername').value = '';
+  document.getElementById('inviteStatus').textContent = '';
+  friendBet = 0;
+  showScreen('invite');
+}
+
+function sendFriendInvite() {
+  const username = document.getElementById('friendUsername').value.trim().replace('@','');
+  if (!username) { showToast('⚠️ Enter friend username'); return; }
+  const name = document.getElementById('playerName').value.trim() || 'Player';
+  
+  connectSocket();
+
+  function onConn() {
+    socket.emit('invite_friend', { 
+      fromName: name, 
+      toUsername: username, 
+      bet: friendBet 
+    });
+    document.getElementById('inviteStatus').textContent = '⏳ Waiting for @' + username + '...';
+    
+    // Also show matchmaking screen waiting
+    document.getElementById('waitingBetDisplay').textContent = friendBet === 0 ? 'Free 🆓' : friendBet + ' ⭐';
+    document.getElementById('waitingOnline').textContent = 'Waiting for @' + username;
+    showScreen('matchmaking');
+  }
+  
+  if (socket.connected) onConn();
+  else socket.once('connect', onConn);
+}
+
+// ===== TIMER =====
+let turnTimer = null;
+let timerSeconds = 60;
+
+function startTurnTimer() {
+  clearTurnTimer();
+  timerSeconds = 60;
+  updateTimerDisplay();
+  turnTimer = setInterval(() => {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      clearTurnTimer();
+      showToast('⏰ Time up! Turn passed.');
+      passTurn();
+    }
+  }, 1000);
+}
+
+function clearTurnTimer() {
+  if (turnTimer) { clearInterval(turnTimer); turnTimer = null; }
+  document.getElementById('timerDisplay').textContent = '';
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('timerDisplay');
+  const color = timerSeconds <= 10 ? '#e74c3c' : timerSeconds <= 20 ? '#f5c518' : '#8888aa';
+  el.innerHTML = '<span style="color:' + color + '">⏱ ' + timerSeconds + 's</span>';
+}
 
 // ===== SOCKET.IO REAL MULTIPLAYER =====
 const SERVER_URL = 'https://backgammon-server-hato.onrender.com';
@@ -1971,183 +2156,200 @@ let socket = null;
 let isRealMultiplayer = false;
 
 function connectSocket() {
-if (socket && socket.connected) return;
-socket = io(SERVER_URL, { transports: ['websocket', 'polling'] });
+  if (socket && socket.connected) return;
+  socket = io(SERVER_URL, { transports: ['websocket', 'polling'] });
 
-socket.on('connect', () => {
-console.log('✅ Connected to server');
-socket.emit('get_online');
-});
+  socket.on('connect', () => {
+    console.log('✅ Connected to server');
+    socket.emit('get_online');
+  });
 
-socket.on('online_count', ({ count }) => {
-const els = document.querySelectorAll('#waitingOnline, #onlineCount');
-els.forEach(el => { if(el) el.textContent = count + ' نفر Online'; });
-});
+  socket.on('online_count', ({ count }) => {
+    const els = document.querySelectorAll('#waitingOnline, #onlineCount');
+    els.forEach(el => { if(el) el.textContent = count + ' نفر Online'; });
+  });
 
-socket.on('waiting', () => {
-// already on matchmaking screen
-});
+  socket.on('waiting', () => {
+    // already on matchmaking screen
+  });
 
-socket.on('match_found', ({ roomId: rid, white, black, bet }) => {
-isRealMultiplayer = true;
-roomId = rid;
-const isWhite = white.id === socket.id;
-myColor = isWhite ? 'white' : 'black';
-const oppN = isWhite ? black.name : white.name;
-startGameReal(oppN);
-});
+  socket.on('match_found', ({ roomId: rid, white, black, bet }) => {
+    isRealMultiplayer = true;
+    roomId = rid;
+    const isWhite = white.id === socket.id;
+    myColor = isWhite ? 'white' : 'black';
+    const oppN = isWhite ? black.name : white.name;
+    startGameReal(oppN);
+  });
 
-socket.on('opponent_dice', ({ dice }) => {
-if (isMyTurn) return;
-diceValues = dice;
-diceUsed = dice.map(() => false);
-updateDiceDisplay();
-});
+  socket.on('opponent_dice', ({ dice }) => {
+    if (isMyTurn) return;
+    diceValues = dice;
+    diceUsed = dice.map(() => false);
+    updateDiceDisplay();
+  });
 
-socket.on('opponent_move', ({ from, to, diceUsed: du }) => {
-if (isMyTurn) return;
-const oppColor = myColor === 'white' ? 'black' : 'white';
-// Apply opponent move to board
-applyMove(from, to, oppColor);
-diceUsed = du;
-updateDiceDisplay();
-drawBoard();
-});
+  socket.on('opponent_move', ({ from, to, diceUsed: du }) => {
+    if (isMyTurn) return;
+    const oppColor = myColor === 'white' ? 'black' : 'white';
+    // Apply opponent move to board
+    applyMove(from, to, oppColor);
+    diceUsed = du;
+    updateDiceDisplay();
+    drawBoard();
+  });
 
-socket.on('opponent_passed', () => {
-isMyTurn = true;
-diceValues = [];
-diceUsed = [];
-updateDiceDisplay();
-updateTurnIndicator();
-document.getElementById('rollBtn').disabled = false;
-drawBoard();
-});
+  socket.on('opponent_passed', () => {
+    isMyTurn = true;
+    diceValues = [];
+    diceUsed = [];
+    updateDiceDisplay();
+    updateTurnIndicator();
+    document.getElementById('rollBtn').disabled = false;
+    drawBoard();
+    showToast('Your turn! Roll the dice 🎲');
+  });
 
-socket.on('opponent_chat', ({ name, text }) => {
-addChatMessage('opp', name, text);
-});
+  socket.on('opponent_chat', ({ name, text }) => {
+    addChatMessage('opp', name, text);
+  });
 
-socket.on('game_result', ({ winnerId, bet }) => {
-const iWon = winnerId === socket.id;
-endGame(iWon);
-});
+  socket.on('game_result', ({ winnerId, bet }) => {
+    const iWon = winnerId === socket.id;
+    endGame(iWon);
+  });
 
-socket.on('opponent_left', () => {
-showToast('⚠️ Opponent left the game!');
-setTimeout(() => endGame(true), 1500);
-});
+  socket.on('opponent_left', () => {
+    showToast('⚠️ Opponent left the game!');
+    setTimeout(() => endGame(true), 1500);
+  });
 
-socket.on('queue_cancelled', () => {
-showScreen('lobby');
-});
+  socket.on('queue_cancelled', () => {
+    showScreen('lobby');
+  });
 
-socket.on('disconnect', () => {
-console.log('❌ Disconnected');
-});
+  socket.on('disconnect', () => {
+    console.log('❌ Disconnected');
+  });
+
+  // Invite / room code events
+  socket.on('code_match_found', ({ roomId: rid, white, black, bet: b }) => {
+    isRealMultiplayer = true;
+    roomId = rid;
+    selectedBet = b;
+    isFreePlay = b === 0;
+    const isWhite = white.id === socket.id;
+    myColor = isWhite ? 'white' : 'black';
+    const oppN = isWhite ? black.name : white.name;
+    startGameReal(oppN);
+  });
+
+  socket.on('code_not_found', () => {
+    document.getElementById('inviteStatus').textContent = '❌ Code not found. Try again.';
+  });
 }
 
 function applyMove(from, to, color) {
-if (from === -2) {
-gameState.bar[color]--;
-} else if (from >= 0) {
-gameState.points[from].count--;
-if (gameState.points[from].count === 0) gameState.points[from].color = null;
-}
-if (to === 'bear-off') {
-gameState.borneOff[color]++;
-} else if (to >= 0) {
-const dest = gameState.points[to];
-const oppColor = color === 'white' ? 'black' : 'white';
-if (dest && dest.color === oppColor && dest.count === 1) {
-gameState.bar[oppColor]++;
-gameState.points[to] = { count: 1, color };
-} else {
-if (!dest || dest.count === 0) gameState.points[to] = { count: 1, color };
-else gameState.points[to].count++;
-}
-}
+  if (from === -2) {
+    gameState.bar[color]--;
+  } else if (from >= 0) {
+    gameState.points[from].count--;
+    if (gameState.points[from].count === 0) gameState.points[from].color = null;
+  }
+  if (to === 'bear-off') {
+    gameState.borneOff[color]++;
+  } else if (to >= 0) {
+    const dest = gameState.points[to];
+    const oppColor = color === 'white' ? 'black' : 'white';
+    if (dest && dest.color === oppColor && dest.count === 1) {
+      gameState.bar[oppColor]++;
+      gameState.points[to] = { count: 1, color };
+    } else {
+      if (!dest || dest.count === 0) gameState.points[to] = { count: 1, color };
+      else gameState.points[to].count++;
+    }
+  }
 }
 
 function startGameReal(oppN) {
-gameState = initBoard();
-isMyTurn = myColor === 'white';
-diceValues = [];
-diceUsed = [];
-selectedPoint = -1;
-validMoves = [];
+  gameState = initBoard();
+  isMyTurn = myColor === 'white';
+  diceValues = [];
+  diceUsed = [];
+  selectedPoint = -1;
+  validMoves = [];
 
-document.getElementById('myNameDisplay').textContent = playerName || 'Me';
-document.getElementById('myAvatar').textContent = (playerName || 'م')[0];
-document.getElementById('oppName').textContent = oppN;
-document.getElementById('oppAvatar').textContent = oppN[0];
-document.getElementById('potDisplay').textContent = (selectedBet * 2) + '⭐';
-if (!isFreePlay && selectedBet > 0) myStars -= selectedBet;
+  document.getElementById('myNameDisplay').textContent = playerName || 'Me';
+  document.getElementById('myAvatar').textContent = (playerName || 'م')[0];
+  document.getElementById('oppName').textContent = oppN;
+  document.getElementById('oppAvatar').textContent = oppN[0];
+  document.getElementById('potDisplay').textContent = (selectedBet * 2) + '⭐';
+  if (!isFreePlay && selectedBet > 0) myStars -= selectedBet;
 
-showScreen('game');
-setTimeout(() => {
-initCanvas();
-canvas.addEventListener('click', onCanvasClick);
-canvas.addEventListener('touchend', (e) => {
-e.preventDefault();
-onCanvasClick(e.changedTouches[0]);
-});
-drawBoard();
-updateTurnIndicator();
-addChatMessage('system', null, `Game started! You are`);
-document.getElementById('rollBtn').disabled = !isMyTurn;
-}, 100);
+  showScreen('game');
+  setTimeout(() => {
+    initCanvas();
+    canvas.addEventListener('click', onCanvasClick);
+    canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      onCanvasClick(e.changedTouches[0]);
+    });
+    drawBoard();
+    updateTurnIndicator();
+    addChatMessage('system', null, `Game started! You are`);
+    document.getElementById('rollBtn').disabled = !isMyTurn;
+  }, 100);
 }
 
 // Override createRoom for real multiplayer
 const _origCreateRoom = createRoom;
 function createRoom() {
-playerName = document.getElementById('playerName').value.trim() || 'Player';
-if (myStars < selectedBet) { showToast('⭐ Not enough Stars!'); return; }
-document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
-showScreen('matchmaking');
-connectSocket();
-socket.emit('join_queue', { name: playerName, bet: selectedBet, stars: myStars });
+  playerName = document.getElementById('playerName').value.trim() || 'Player';
+  if (myStars < selectedBet) { showToast('⭐ Not enough Stars!'); return; }
+  document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
+  showScreen('matchmaking');
+  connectSocket();
+  socket.emit('join_queue', { name: playerName, bet: selectedBet, stars: myStars });
 }
 
 // Override cancelSearch
 function cancelSearch() {
-if (socket && socket.connected) socket.emit('cancel_queue');
-else showScreen('lobby');
+  if (socket && socket.connected) socket.emit('cancel_queue');
+  showScreen('lobby');
 }
 
 // Override sendChat for real multiplayer
 const _origSendChat = sendChat;
 function sendChat() {
-const input = document.getElementById('chatInput');
-const text = input.value.trim();
-if (!text) return;
-addChatMessage('me', playerName || 'Me', text);
-input.value = '';
-if (isRealMultiplayer && socket) {
-socket.emit('chat_message', { roomId, text });
-}
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addChatMessage('me', playerName || 'Me', text);
+  input.value = '';
+  if (isRealMultiplayer && socket) {
+    socket.emit('chat_message', { roomId, text });
+  }
 }
 
 // Override passTurn for real multiplayer
 const _origPassTurn = passTurn;
 function passTurn() {
-isMyTurn = false;
-selectedPoint = -1;
-validMoves = [];
-diceValues = [];
-diceUsed = [];
-document.getElementById('rollBtn').disabled = true;
-document.getElementById('passBtn').disabled = true;
-document.getElementById('selectedHint').textContent = '';
-updateDiceDisplay();
-updateTurnIndicator();
-drawBoard();
-if (isRealMultiplayer && socket) {
-socket.emit('pass_turn', { roomId });
-} else {
-simulateOpponentTurn();
-}
+  isMyTurn = false;
+  selectedPoint = -1;
+  validMoves = [];
+  diceValues = [];
+  diceUsed = [];
+  document.getElementById('rollBtn').disabled = true;
+  document.getElementById('passBtn').disabled = true;
+  document.getElementById('selectedHint').textContent = '';
+  updateDiceDisplay();
+  updateTurnIndicator();
+  drawBoard();
+  if (isRealMultiplayer && socket) {
+    socket.emit('pass_turn', { roomId });
+  } else {
+    simulateOpponentTurn();
+  }
 }
 
 // Connect on load
