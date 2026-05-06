@@ -4,795 +4,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Backgammon ⭐</title>
+<title>RPS Stars ✊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap');
-
 :root {
-–bg: #0a0a0f;
-–surface: #12121a;
-–surface2: #1a1a26;
-–surface3: #22223a;
-–accent: #f5c518;
-–accent2: #ff6b35;
-–green: #2ecc71;
-–red: #e74c3c;
-–text: #e8e8f0;
-–text2: #8888aa;
-–board-dark: #1a3a2a;
-–board-light: #f0d9b5;
-–white-piece: #f0ede0;
-–black-piece: #1a1a2e;
-–point-dark: #2d6a4f;
-–point-light: #c8a96e;
-–border: #2a2a40;
+  --bg: #0c0c14;
+  --card: #14141f;
+  --card2: #1c1c2e;
+  --border: #2a2a40;
+  --gold: #f5c518;
+  --gold2: #e6a817;
+  --win: #00e676;
+  --lose: #ff5252;
+  --draw: #64b5f6;
+  --text: #f0f0ff;
+  --muted: #7070a0;
+  --rock: #ff7043;
+  --paper: #42a5f5;
+  --scissors: #ab47bc;
 }
-
-- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
 
 body {
-font-family: ‘Vazirmatn’, sans-serif;
+font-family: ‘DM Sans’, sans-serif;
 background: var(–bg);
 color: var(–text);
 min-height: 100vh;
 overflow: hidden;
-position: relative;
 }
 
 body::before {
 content:’’;
 position:fixed;
 inset:0;
-background: radial-gradient(ellipse at 20% 20%, rgba(245,197,24,0.06) 0%, transparent 50%),
-radial-gradient(ellipse at 80% 80%, rgba(255,107,53,0.05) 0%, transparent 50%);
+background:
+radial-gradient(circle at 15% 85%, rgba(245,197,24,0.07) 0%, transparent 45%),
+radial-gradient(circle at 85% 15%, rgba(171,71,188,0.07) 0%, transparent 45%);
 pointer-events:none;
+z-index:0;
 }
 
-/* ===== SCREENS ===== */
-.screen { position:fixed; inset:0; display:flex; flex-direction:column; overflow:hidden; }
+.screen { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; gap:16px; overflow:hidden; z-index:1; }
 .screen.hidden { display:none !important; }
 
 /* ===== LOBBY ===== */
-#lobby {
-align-items:center;
-justify-content:center;
-padding: 20px;
-gap: 20px;
-}
-
-.logo-area {
-text-align:center;
-animation: floatUp 0.6s ease both;
-}
-
-.logo-dice {
-font-size: 56px;
-line-height:1;
-filter: drop-shadow(0 0 20px rgba(245,197,24,0.5));
-animation: spin3d 4s ease-in-out infinite;
-}
-
-@keyframes spin3d {
-0%,100% { transform: rotateY(0deg); }
-50% { transform: rotateY(20deg) rotateX(5deg); }
-}
+.logo-wrap { text-align:center; }
+.logo-emoji { font-size:64px; line-height:1; display:block; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
 .logo-title {
-font-size: 28px;
-font-weight: 900;
-background: linear-gradient(135deg, #f5c518, #ff6b35);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-margin-top: 8px;
-letter-spacing: -0.5px;
+font-family:‘Syne’,sans-serif;
+font-size:32px;
+font-weight:900;
+background: linear-gradient(135deg, #f5c518 0%, #ff7043 50%, #ab47bc 100%);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+letter-spacing:-1px;
+margin-top:8px;
 }
+.logo-sub { font-size:13px; color:var(–muted); margin-top:4px; }
 
-.logo-sub {
-font-size: 13px;
-color: var(–text2);
-margin-top: 4px;
-}
-
-@keyframes floatUp {
-from { opacity:0; transform:translateY(20px); }
-to { opacity:1; transform:translateY(0); }
-}
-
-.stars-display {
-display:flex;
-align-items:center;
-gap: 8px;
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 50px;
-padding: 10px 20px;
-font-size: 16px;
-font-weight: 700;
-animation: floatUp 0.6s 0.1s ease both;
-}
-
-.stars-display .star-icon { font-size: 20px; }
-.stars-display span { color: var(–accent); }
-
-.name-input-area {
-width: 100%;
-max-width: 360px;
-animation: floatUp 0.6s 0.2s ease both;
-}
-
-.input-label {
-font-size: 12px;
-color: var(–text2);
-margin-bottom: 6px;
-font-weight: 500;
-}
-
+.name-wrap { width:100%; max-width:340px; }
+.field-label { font-size:11px; color:var(–muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; font-weight:600; }
 .name-input {
-width: 100%;
-background: var(–surface2);
-border: 1.5px solid var(–border);
-border-radius: 14px;
-padding: 14px 16px;
-font-family: ‘Vazirmatn’, sans-serif;
-font-size: 15px;
-color: var(–text);
-outline: none;
-transition: border-color 0.2s;
-text-align: right;
+width:100%;
+background:var(–card2);
+border:1.5px solid var(–border);
+border-radius:14px;
+padding:14px 16px;
+font-family:‘DM Sans’,sans-serif;
+font-size:15px;
+color:var(–text);
+outline:none;
+transition:border-color 0.2s;
 }
+.name-input:focus { border-color:var(–gold); }
+.name-input::placeholder { color:var(–muted); }
 
-.name-input:focus { border-color: var(–accent); }
+.bets-wrap { width:100%; max-width:340px; }
+.bets-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:8px; }
 
-.bet-selector {
-width: 100%;
-max-width: 360px;
-animation: floatUp 0.6s 0.3s ease both;
+.bet-card {
+background:var(–card2);
+border:1.5px solid var(–border);
+border-radius:16px;
+padding:14px 8px;
+text-align:center;
+cursor:pointer;
+transition:all 0.2s;
+position:relative;
+overflow:hidden;
 }
-
-.bet-label {
-font-size: 12px;
-color: var(–text2);
-margin-bottom: 8px;
-font-weight: 500;
+.bet-card::before {
+content:’’;
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,rgba(245,197,24,0.12),transparent);
+opacity:0;
+transition:opacity 0.2s;
 }
+.bet-card.active { border-color:var(–gold); }
+.bet-card.active::before { opacity:1; }
 
-.bet-options {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 8px;
+.bet-entry { font-size:11px; color:var(–muted); }
+.bet-amount { font-family:‘Syne’,sans-serif; font-size:20px; font-weight:800; color:var(–text); margin:2px 0; }
+.bet-win { font-size:13px; font-weight:700; color:var(–win); }
+
+.btn-find {
+width:100%;
+max-width:340px;
+background:linear-gradient(135deg,var(–gold),var(–gold2));
+border:none;
+border-radius:16px;
+padding:16px;
+font-family:‘Syne’,sans-serif;
+font-size:17px;
+font-weight:800;
+color:#0c0c14;
+cursor:pointer;
+transition:all 0.2s;
+letter-spacing:-0.3px;
 }
-
-.bet-btn {
-background: var(–surface2);
-border: 1.5px solid var(–border);
-border-radius: 12px;
-padding: 12px 6px;
-text-align: center;
-cursor: pointer;
-transition: all 0.2s;
-font-family: ‘Vazirmatn’, sans-serif;
-color: var(–text2);
-}
-
-.bet-btn .bet-amount {
-font-size: 16px;
-font-weight: 700;
-display: block;
-color: var(–text);
-}
-
-.bet-btn .bet-star { font-size: 11px; }
-
-.bet-btn.active {
-border-color: var(–accent);
-background: rgba(245,197,24,0.12);
-color: var(–accent);
-}
-
-.bet-btn.active .bet-amount { color: var(–accent); }
-
-.action-btns {
-width: 100%;
-max-width: 360px;
-display: flex;
-flex-direction: column;
-gap: 10px;
-animation: floatUp 0.6s 0.4s ease both;
-}
-
-.btn-primary {
-width: 100%;
-background: linear-gradient(135deg, #f5c518, #e6a817);
-border: none;
-border-radius: 16px;
-padding: 16px;
-font-family: ‘Vazirmatn’, sans-serif;
-font-size: 16px;
-font-weight: 700;
-color: #0a0a0f;
-cursor: pointer;
-transition: all 0.2s;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-}
-
-.btn-primary:active { transform: scale(0.97); }
-
-.btn-secondary {
-width: 100%;
-background: var(–surface2);
-border: 1.5px solid var(–border);
-border-radius: 16px;
-padding: 14px;
-font-family: ‘Vazirmatn’, sans-serif;
-font-size: 15px;
-font-weight: 600;
-color: var(–text);
-cursor: pointer;
-transition: all 0.2s;
-}
-
-.btn-secondary:active { transform: scale(0.97); }
+.btn-find:active { transform:scale(0.97); }
 
 /* ===== MATCHMAKING ===== */
-#matchmaking {
-align-items:center;
-justify-content:center;
-gap: 28px;
-padding: 20px;
+.mm-ring-wrap { position:relative; width:110px; height:110px; }
+.mm-ring {
+position:absolute; inset:0;
+border-radius:50%;
+border:3px solid transparent;
+border-top-color:var(–gold);
+animation:spin 1s linear infinite;
+}
+.mm-ring:nth-child(2) { inset:14px; border-top-color:var(–scissors); animation-duration:.7s; animation-direction:reverse; }
+.mm-inner { position:absolute; inset:26px; background:var(–card2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+.mm-title { font-family:‘Syne’,sans-serif; font-size:22px; font-weight:800; }
+.mm-sub { font-size:13px; color:var(–muted); text-align:center; }
+.mm-bet {
+background:var(–card2);
+border:1.5px solid rgba(245,197,24,0.3);
+border-radius:14px;
+padding:12px 28px;
+text-align:center;
+}
+.mm-bet .l { font-size:11px; color:var(–muted); }
+.mm-bet .v { font-family:‘Syne’,sans-serif; font-size:22px; font-weight:800; color:var(–gold); }
+
+.online-pill {
+display:flex; align-items:center; gap:6px;
+background:var(–card2); border:1px solid var(–border);
+border-radius:50px; padding:7px 16px;
+font-size:12px; color:var(–muted);
+}
+.dot { width:7px;height:7px;background:var(–win);border-radius:50%;animation:pulse 2s infinite; }
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+.btn-cancel {
+background:var(–card2); border:1.5px solid var(–border);
+border-radius:12px; padding:10px 28px;
+font-family:‘DM Sans’,sans-serif; font-size:14px; font-weight:600;
+color:var(–muted); cursor:pointer; transition:all 0.2s;
+}
+.btn-cancel:active { transform:scale(0.97); }
+
+/* ===== GAME ===== */
+#game { justify-content:flex-start; padding:0; gap:0; }
+
+.game-top {
+width:100%; padding:12px 16px;
+background:var(–card);
+border-bottom:1px solid var(–border);
+display:flex; align-items:center; justify-content:space-between;
+flex-shrink:0;
+}
+.player-chip { display:flex; align-items:center; gap:8px; }
+.player-chip.right { flex-direction:row-reverse; }
+.avatar {
+width:38px;height:38px;border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+font-family:‘Syne’,sans-serif;font-size:16px;font-weight:800;
+flex-shrink:0;
+}
+.av-me { background:linear-gradient(135deg,var(–gold),var(–gold2)); color:#0c0c14; }
+.av-opp { background:var(–card2); border:1.5px solid var(–border); color:var(–text); }
+.pname { font-size:13px; font-weight:600; max-width:72px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pot-box { text-align:center; }
+.pot-label { font-size:10px; color:var(–muted); }
+.pot-val { font-family:‘Syne’,sans-serif; font-size:18px; font-weight:800; color:var(–gold); }
+
+.game-mid {
+flex:1; display:flex; flex-direction:column;
+align-items:center; justify-content:center;
+gap:12px; padding:16px;
 }
 
-.waiting-animation {
-position: relative;
-width: 120px;
-height: 120px;
+.round-info {
+font-family:‘Syne’,sans-serif;
+font-size:13px; color:var(–muted); letter-spacing:1px; text-transform:uppercase;
 }
 
-.waiting-ring {
-position: absolute;
-inset: 0;
-border-radius: 50%;
-border: 3px solid transparent;
-border-top-color: var(–accent);
-animation: spin 1.2s linear infinite;
+.score-row {
+display:flex; align-items:center; gap:20px;
+}
+.score-box { text-align:center; }
+.score-label { font-size:11px; color:var(–muted); margin-bottom:2px; }
+.score-num { font-family:‘Syne’,sans-serif; font-size:42px; font-weight:900; line-height:1; }
+.score-num.me { color:var(–gold); }
+.score-num.opp { color:var(–scissors); }
+.score-dash { font-size:24px; color:var(–border); }
+
+.vs-area {
+width:100%; display:flex; align-items:center; justify-content:center;
+gap:16px; padding:16px 0;
+}
+.choice-display {
+width:80px; height:80px;
+background:var(–card2); border:2px solid var(–border);
+border-radius:20px;
+display:flex; align-items:center; justify-content:center;
+font-size:40px;
+transition:all 0.3s;
+}
+.choice-display.revealed { animation:revealPop 0.4s ease; }
+.choice-display.win-highlight { border-color:var(–win); box-shadow:0 0 20px rgba(0,230,118,0.3); }
+.choice-display.lose-highlight { border-color:var(–lose); box-shadow:0 0 20px rgba(255,82,82,0.3); }
+@keyframes revealPop { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+
+.vs-label { font-family:‘Syne’,sans-serif; font-size:16px; font-weight:800; color:var(–muted); }
+
+.round-result {
+font-family:‘Syne’,sans-serif;
+font-size:20px; font-weight:800;
+min-height:28px; text-align:center;
+transition:all 0.3s;
+}
+.round-result.win { color:var(–win); }
+.round-result.lose { color:var(–lose); }
+.round-result.draw { color:var(–draw); }
+
+.pick-label {
+font-size:12px; color:var(–muted); font-weight:600;
+text-transform:uppercase; letter-spacing:1px;
 }
 
-.waiting-ring:nth-child(2) {
-inset: 12px;
-border-top-color: var(–accent2);
-animation-duration: 0.8s;
-animation-direction: reverse;
+.choices-row {
+display:flex; gap:12px;
+}
+.choice-btn {
+width:80px; height:80px;
+background:var(–card2); border:2px solid var(–border);
+border-radius:20px;
+display:flex; flex-direction:column; align-items:center; justify-content:center;
+font-size:32px; cursor:pointer;
+transition:all 0.18s;
+position:relative; overflow:hidden;
+}
+.choice-btn span { font-size:10px; color:var(–muted); font-weight:600; margin-top:2px; }
+.choice-btn:active { transform:scale(0.92); }
+.choice-btn.rock:active, .choice-btn.rock.selected { border-color:var(–rock); background:rgba(255,112,67,0.12); }
+.choice-btn.paper:active, .choice-btn.paper.selected { border-color:var(–paper); background:rgba(66,165,245,0.12); }
+.choice-btn.scissors:active, .choice-btn.scissors.selected { border-color:var(–scissors); background:rgba(171,71,188,0.12); }
+.choice-btn:disabled { opacity:0.35; cursor:default; transform:none !important; }
+
+.timer-bar-wrap {
+width:100%; max-width:280px;
+height:4px; background:var(–card2);
+border-radius:2px; overflow:hidden;
+}
+.timer-bar {
+height:100%; background:var(–gold);
+border-radius:2px;
+transition:width 1s linear, background 0.3s;
 }
 
-.waiting-inner {
-position: absolute;
-inset: 24px;
-background: var(–surface2);
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 30px;
+.game-bottom {
+padding:10px 16px 14px;
+background:var(–card);
+border-top:1px solid var(–border);
+width:100%; flex-shrink:0;
+text-align:center;
+}
+.status-text { font-size:13px; color:var(–muted); font-weight:500; }
+
+/* ===== RESULT ===== */
+.result-icon { font-size:80px; animation:bounceIn 0.5s ease; }
+@keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+.result-title { font-family:‘Syne’,sans-serif; font-size:34px; font-weight:900; letter-spacing:-1px; }
+.result-title.win { color:var(–win); }
+.result-title.lose { color:var(–lose); }
+.result-title.draw { color:var(–draw); }
+.result-stars { text-align:center; }
+.rs-label { font-size:12px; color:var(–muted); }
+.rs-val { font-family:‘Syne’,sans-serif; font-size:48px; font-weight:900; line-height:1; }
+.rs-val.win { color:var(–win); }
+.rs-val.lose { color:var(–lose); }
+
+.result-btns { width:100%; max-width:320px; display:flex; flex-direction:column; gap:10px; }
+.btn-primary2 {
+width:100%; background:linear-gradient(135deg,var(–gold),var(–gold2));
+border:none; border-radius:16px; padding:15px;
+font-family:‘Syne’,sans-serif; font-size:16px; font-weight:800;
+color:#0c0c14; cursor:pointer; transition:all 0.2s;
+}
+.btn-primary2:active { transform:scale(0.97); }
+.btn-sec2 {
+width:100%; background:var(–card2); border:1.5px solid var(–border);
+border-radius:16px; padding:13px;
+font-family:‘DM Sans’,sans-serif; font-size:15px; font-weight:600;
+color:var(–text); cursor:pointer; transition:all 0.2s;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.waiting-title {
-font-size: 22px;
-font-weight: 700;
-text-align: center;
-}
-
-.waiting-sub {
-font-size: 13px;
-color: var(–text2);
-text-align: center;
-}
-
-.online-count {
-display: flex;
-align-items: center;
-gap: 8px;
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 50px;
-padding: 8px 18px;
-font-size: 13px;
-color: var(–text2);
-}
-
-.online-dot {
-width: 8px; height: 8px;
-background: var(–green);
-border-radius: 50%;
-animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-0%,100% { opacity:1; transform:scale(1); }
-50% { opacity:0.5; transform:scale(0.8); }
-}
-
-.waiting-bet-info {
-background: var(–surface2);
-border: 1.5px solid rgba(245,197,24,0.3);
-border-radius: 16px;
-padding: 16px 24px;
-text-align: center;
-}
-
-.waiting-bet-info .label { font-size: 12px; color: var(–text2); }
-.waiting-bet-info .value { font-size: 24px; font-weight: 700; color: var(–accent); margin-top: 2px; }
-
-/* ===== GAME SCREEN ===== */
-#game {
-display: flex;
-flex-direction: column;
-overflow: hidden;
-background: var(–bg);
-}
-
-.game-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 12px 16px;
-background: var(–surface);
-border-bottom: 1px solid var(–border);
-flex-shrink: 0;
-}
-
-.player-info-mini {
-display: flex;
-align-items: center;
-gap: 8px;
-flex: 1;
-}
-
-.player-info-mini.right { flex-direction: row-reverse; }
-
-.player-avatar {
-width: 36px; height: 36px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 16px;
-font-weight: 700;
-flex-shrink: 0;
-}
-
-.avatar-white { background: var(–white-piece); color: #333; }
-.avatar-black { background: var(–black-piece); color: #fff; border: 1.5px solid #444; }
-
-.player-name-mini {
-font-size: 13px;
-font-weight: 600;
-max-width: 70px;
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
-}
-
-.pot-display {
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 2px;
-flex-shrink: 0;
-}
-
-.pot-label { font-size: 10px; color: var(–text2); }
-.pot-value { font-size: 18px; font-weight: 700; color: var(–accent); }
-
-/* ===== BOARD ===== */
-.board-wrapper {
-flex: 1;
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 8px;
-overflow: hidden;
-}
-
-.board-container {
-position: relative;
-background: var(–board-dark);
-border-radius: 16px;
-border: 2px solid #2d4a3a;
-box-shadow: 0 0 40px rgba(0,0,0,0.5);
-overflow: hidden;
-}
-
-.board-canvas {
-display: block;
-}
-
-/* ===== GAME CONTROLS ===== */
-.game-controls {
-padding: 10px 16px;
-background: var(–surface);
-border-top: 1px solid var(–border);
-flex-shrink: 0;
-}
-
-.dice-area {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 12px;
-margin-bottom: 10px;
-}
-
-.dice-display {
-display: flex;
-gap: 8px;
-}
-
-.die {
-width: 44px; height: 44px;
-background: white;
-border-radius: 10px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 24px;
-box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-transition: all 0.3s;
-position: relative;
-overflow: hidden;
-}
-
-.die.used {
-opacity: 0.3;
-transform: scale(0.9);
-}
-
-.die.rolling {
-animation: diceRoll 0.5s ease;
-}
-
-@keyframes diceRoll {
-0% { transform: rotate(0deg) scale(1); }
-25% { transform: rotate(90deg) scale(1.1); }
-50% { transform: rotate(180deg) scale(0.9); }
-75% { transform: rotate(270deg) scale(1.1); }
-100% { transform: rotate(360deg) scale(1); }
-}
-
-.controls-row {
-display: flex;
-gap: 8px;
-justify-content: center;
-}
-
-.ctrl-btn {
-flex: 1;
-max-width: 140px;
-background: var(–surface2);
-border: 1.5px solid var(–border);
-border-radius: 12px;
-padding: 11px 8px;
-font-family: ‘Vazirmatn’, sans-serif;
-font-size: 13px;
-font-weight: 600;
-color: var(–text);
-cursor: pointer;
-transition: all 0.2s;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 5px;
-}
-
-.ctrl-btn.primary-action {
-background: linear-gradient(135deg, #f5c518, #e6a817);
-border-color: transparent;
-color: #0a0a0f;
-}
-
-.ctrl-btn:active { transform: scale(0.96); }
-
-.ctrl-btn:disabled {
-opacity: 0.4;
-cursor: default;
-transform: none;
-}
-
-.turn-indicator {
-text-align: center;
-font-size: 12px;
-font-weight: 600;
-margin-bottom: 8px;
-padding: 6px 12px;
-border-radius: 50px;
-display: inline-block;
-width: 100%;
-}
-
-.turn-indicator.my-turn {
-background: rgba(46,204,113,0.15);
-color: var(–green);
-}
-
-.turn-indicator.opponent-turn {
-background: rgba(136,136,170,0.1);
-color: var(–text2);
-}
-
-/* ===== CHAT ===== */
-.chat-area {
-height: 0;
-overflow: hidden;
-transition: height 0.3s ease;
-background: var(–surface);
-border-top: 1px solid var(–border);
-}
-
-.chat-area.open { height: 160px; }
-
-.chat-messages {
-height: 110px;
-overflow-y: auto;
-padding: 8px 12px;
-display: flex;
-flex-direction: column;
-gap: 4px;
-}
-
-.chat-msg {
-font-size: 12px;
-line-height: 1.4;
-}
-
-.chat-msg .msg-name {
-font-weight: 700;
-margin-left: 4px;
-}
-
-.chat-msg.me .msg-name { color: var(–accent); }
-.chat-msg.opp .msg-name { color: var(–accent2); }
-.chat-msg.system { color: var(–text2); font-style: italic; }
-
-.chat-input-row {
-display: flex;
-gap: 8px;
-padding: 0 8px 8px;
-}
-
-.chat-input {
-flex: 1;
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 7px 10px;
-font-family: ‘Vazirmatn’, sans-serif;
-font-size: 13px;
-color: var(–text);
-outline: none;
-}
-
-.chat-send {
-background: var(–accent);
-border: none;
-border-radius: 10px;
-width: 34px;
-cursor: pointer;
-font-size: 16px;
-color: #0a0a0f;
-transition: all 0.2s;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-/* ===== RESULT SCREEN ===== */
-#result {
-align-items: center;
-justify-content: center;
-gap: 24px;
-padding: 20px;
-}
-
-.result-icon {
-font-size: 80px;
-animation: bounceIn 0.6s ease both;
-filter: drop-shadow(0 0 30px rgba(245,197,24,0.4));
-}
-
-@keyframes bounceIn {
-0% { transform: scale(0); opacity:0; }
-60% { transform: scale(1.2); }
-100% { transform: scale(1); opacity:1; }
-}
-
-.result-title {
-font-size: 32px;
-font-weight: 900;
-text-align: center;
-animation: floatUp 0.5s 0.3s ease both;
-opacity: 0;
-animation-fill-mode: both;
-}
-
-.result-title.win { color: var(–accent); }
-.result-title.lose { color: var(–red); }
-
-.result-stars {
-text-align: center;
-animation: floatUp 0.5s 0.5s ease both;
-opacity: 0;
-animation-fill-mode: both;
-}
-
-.result-stars .rs-label { font-size: 14px; color: var(–text2); }
-.result-stars .rs-value {
-font-size: 48px;
-font-weight: 900;
-line-height: 1;
-margin-top: 4px;
-}
-
-.result-stars .rs-value.win { color: var(–accent); }
-.result-stars .rs-value.lose { color: var(–red); }
-
-.result-actions {
-width: 100%;
-max-width: 320px;
-display: flex;
-flex-direction: column;
-gap: 10px;
-animation: floatUp 0.5s 0.7s ease both;
-opacity: 0;
-animation-fill-mode: both;
-}
-
-/* ===== ROOMS LIST ===== */
-#rooms {
-display: flex;
-flex-direction: column;
-overflow: hidden;
-}
-
-.rooms-header {
-padding: 16px;
-background: var(–surface);
-border-bottom: 1px solid var(–border);
-display: flex;
-align-items: center;
-gap: 12px;
-flex-shrink: 0;
-}
-
-.rooms-title { font-size: 18px; font-weight: 700; }
-
-.rooms-list {
-flex: 1;
-overflow-y: auto;
-padding: 12px;
-display: flex;
-flex-direction: column;
-gap: 10px;
-}
-
-.room-card {
-background: var(–surface2);
-border: 1.5px solid var(–border);
-border-radius: 16px;
-padding: 16px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-cursor: pointer;
-transition: all 0.2s;
-animation: floatUp 0.3s ease both;
-}
-
-.room-card:active { transform: scale(0.98); }
-.room-card:hover { border-color: rgba(245,197,24,0.4); }
-
-.room-left { display: flex; align-items: center; gap: 12px; }
-
-.room-avatar {
-width: 44px; height: 44px;
-border-radius: 12px;
-background: var(–surface3);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 20px;
-}
-
-.room-info .room-name { font-size: 15px; font-weight: 600; }
-.room-info .room-meta { font-size: 12px; color: var(–text2); margin-top: 2px; }
-
-.room-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-
-.room-bet {
-display: flex;
-align-items: center;
-gap: 4px;
-background: rgba(245,197,24,0.12);
-border-radius: 8px;
-padding: 4px 10px;
-font-size: 14px;
-font-weight: 700;
-color: var(–accent);
-}
-
-.join-badge {
-font-size: 11px;
-background: var(–green);
-color: #0a0a0f;
-padding: 3px 8px;
-border-radius: 6px;
-font-weight: 700;
-}
-
-.empty-rooms {
-flex: 1;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 12px;
-color: var(–text2);
-font-size: 14px;
-}
-
-.empty-rooms .empty-icon { font-size: 48px; opacity: 0.5; }
-
-/* Notification Toast */
+/* Toast */
 .toast {
-position: fixed;
-bottom: 20px;
-left: 50%;
-transform: translateX(-50%) translateY(100px);
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 50px;
-padding: 10px 20px;
-font-size: 13px;
-font-weight: 600;
-z-index: 999;
-transition: transform 0.3s ease;
-white-space: nowrap;
-text-align: center;
+position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(80px);
+background:var(–card2); border:1px solid var(–border);
+border-radius:50px; padding:9px 20px;
+font-size:13px; font-weight:600; z-index:999;
+transition:transform 0.3s; white-space:nowrap;
 }
+.toast.show { transform:translateX(-50%) translateY(0); }
 
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-/* Back button */
-.back-btn {
-background: none;
-border: none;
-color: var(–text2);
-font-size: 22px;
-cursor: pointer;
-padding: 4px;
-line-height: 1;
-transition: color 0.2s;
+/* Waiting for opp overlay */
+.waiting-overlay {
+position:absolute; inset:0; background:rgba(12,12,20,0.85);
+display:flex; flex-direction:column; align-items:center; justify-content:center;
+gap:12px; z-index:10; backdrop-filter:blur(4px);
+border-radius:inherit;
 }
+.waiting-overlay.hidden { display:none; }
 
-.back-btn:hover { color: var(–text); }
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(–border); border-radius: 2px; }
-
-/* ===== PIECE SELECTION ===== */
-.selected-hint {
-font-size: 11px;
-color: var(–accent);
-text-align: center;
-min-height: 16px;
-}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(–border);border-radius:2px}
 </style>
-
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
 </head>
 <body>
@@ -800,186 +347,122 @@ min-height: 16px;
 <!-- ===== LOBBY ===== -->
 
 <div class="screen" id="lobby">
-  <div class="logo-area">
-    <div class="logo-dice">🎲</div>
-    <div class="logo-title">Backgammon ⭐</div>
-    <div class="logo-sub">Play with Telegram Stars</div>
+  <div class="logo-wrap">
+    <span class="logo-emoji">✊</span>
+    <div class="logo-title">RPS Stars</div>
+    <div class="logo-sub">Rock · Paper · Scissors with Telegram Stars</div>
   </div>
 
-  <div class="stars-display" id="starsDisplay" style="display:none">
-    <span class="star-icon">⭐</span>
-    <span id="myStars">0</span>
-    <span style="color:var(--text2);font-weight:400;font-size:13px">Your Stars</span>
+  <div class="name-wrap">
+    <div class="field-label">Your Name</div>
+    <input class="name-input" id="playerName" type="text" placeholder="Enter your name..." maxlength="16">
   </div>
 
-  <div class="name-input-area">
-    <div class="input-label">Your Name</div>
-    <input class="name-input" id="playerName" type="text" placeholder="Enter your name..." maxlength="16" value="">
-  </div>
-
-  <div class="bet-selector" id="betSelector">
-    <div class="bet-label">Bet Amount ⭐</div>
-    <div class="bet-options">
-      <div class="bet-btn" data-bet="76" onclick="selectBet(76)">
-        <span class="bet-amount">76</span>
-        <span class="bet-star">⭐</span>
+  <div class="bets-wrap">
+    <div class="field-label">Select Bet</div>
+    <div class="bets-grid">
+      <div class="bet-card" data-bet="76" onclick="selectBet(76)">
+        <div class="bet-entry">Entry</div>
+        <div class="bet-amount">76⭐</div>
+        <div class="bet-win">Win 140⭐</div>
       </div>
-      <div class="bet-btn" data-bet="152" onclick="selectBet(152)">
-        <span class="bet-amount">152</span>
-        <span class="bet-star">⭐</span>
+      <div class="bet-card" data-bet="152" onclick="selectBet(152)">
+        <div class="bet-entry">Entry</div>
+        <div class="bet-amount">152⭐</div>
+        <div class="bet-win">Win 280⭐</div>
       </div>
-      <div class="bet-btn" data-bet="304" onclick="selectBet(304)">
-        <span class="bet-amount">304</span>
-        <span class="bet-star">⭐</span>
-      </div>
-      <div class="bet-btn" data-bet="760" onclick="selectBet(760)">
-        <span class="bet-amount">760</span>
-        <span class="bet-star">⭐</span>
+      <div class="bet-card" data-bet="304" onclick="selectBet(304)">
+        <div class="bet-entry">Entry</div>
+        <div class="bet-amount">304⭐</div>
+        <div class="bet-win">Win 560⭐</div>
       </div>
     </div>
   </div>
 
-  <div class="action-btns">
-    <button class="btn-primary" onclick="findOpponent()">
-      🔍 Find Opponent
-    </button>
-    <button class="btn-secondary" onclick="showRooms('free')">
-      🆓 Play for Free
-    </button>
-    <button class="btn-secondary" onclick="showInvite()">
-      👥 Play with Friend
-    </button>
-  </div>
-</div>
+<button class="btn-find" onclick="findOpponent()">🔍 Find Opponent</button>
 
-<!-- ===== ROOMS LIST ===== -->
-
-<div class="screen hidden" id="rooms">
-  <div class="rooms-header">
-    <button class="back-btn" onclick="goBack('lobby')">←</button>
-    <div class="rooms-title">Open Rooms 🎲</div>
-    <div style="margin-right:auto;display:flex;align-items:center;gap:6px">
-      <div class="online-dot"></div>
-      <span id="onlineCount" style="font-size:13px;color:var(--text2)">0 Online</span>
-    </div>
-  </div>
-  <div class="rooms-list" id="roomsList"></div>
 </div>
 
 <!-- ===== MATCHMAKING ===== -->
 
 <div class="screen hidden" id="matchmaking">
-  <div class="waiting-animation">
-    <div class="waiting-ring"></div>
-    <div class="waiting-ring"></div>
-    <div class="waiting-inner">🎲</div>
+  <div class="mm-ring-wrap">
+    <div class="mm-ring"></div>
+    <div class="mm-ring"></div>
+    <div class="mm-inner">✊</div>
   </div>
-  <div class="waiting-title">Looking for opponent...</div>
-  <div class="waiting-sub">Please wait, finding your opponent...</div>
-  <div class="waiting-bet-info">
-    <div class="label">Bet</div>
-    <div class="value" id="waitingBetDisplay">1 ⭐</div>
+  <div class="mm-title">Finding Opponent...</div>
+  <div class="mm-sub">Please wait, searching for a match</div>
+  <div class="mm-bet">
+    <div class="l">Bet</div>
+    <div class="v" id="mmBet">76 ⭐</div>
   </div>
-  <div class="online-count">
-    <div class="online-dot"></div>
-    <span id="waitingOnline">12 نفر Online</span>
+  <div class="online-pill">
+    <div class="dot"></div>
+    <span id="mmOnline">— online</span>
   </div>
-  <button class="btn-secondary" style="max-width:200px" onclick="cancelSearch()">Cancel</button>
+  <button class="btn-cancel" onclick="cancelSearch()">Cancel</button>
 </div>
 
 <!-- ===== GAME ===== -->
 
 <div class="screen hidden" id="game">
-  <div class="game-header">
-    <div class="player-info-mini" id="opponentHeader">
-      <div class="player-avatar avatar-black" id="oppAvatar">?</div>
-      <div class="player-name-mini" id="oppName">Opponent</div>
+  <div class="game-top">
+    <div class="player-chip">
+      <div class="avatar av-opp" id="oppAvatar">?</div>
+      <div class="pname" id="oppNameEl">Opponent</div>
     </div>
+    <div class="pot-box">
+      <div class="pot-label">Prize Pool</div>
+      <div class="pot-val" id="potVal">—</div>
+    </div>
+    <div class="player-chip right">
+      <div class="avatar av-me" id="myAvatar">?</div>
+      <div class="pname" id="myNameEl">Me</div>
+    </div>
+  </div>
+
+  <div class="game-mid">
+    <div class="round-info" id="roundInfo">ROUND 1 · FIRST TO 3</div>
 
 ```
-<div class="pot-display">
-  <div class="pot-label">Prize · First to 3 🏆</div>
-  <div class="pot-value" id="potDisplay">2⭐</div>
+<div class="score-row">
+  <div class="score-box">
+    <div class="score-label">You</div>
+    <div class="score-num me" id="myScore">0</div>
+  </div>
+  <div class="score-dash">—</div>
+  <div class="score-box">
+    <div class="score-label">Opponent</div>
+    <div class="score-num opp" id="oppScore">0</div>
+  </div>
 </div>
 
-<div class="player-info-mini right" id="myHeader">
-  <div class="player-avatar avatar-white" id="myAvatar">?</div>
-  <div class="player-name-mini" id="myNameDisplay">Me</div>
+<div class="vs-area">
+  <div class="choice-display" id="myChoiceDisplay">?</div>
+  <div class="vs-label">VS</div>
+  <div class="choice-display" id="oppChoiceDisplay">?</div>
+</div>
+
+<div class="round-result" id="roundResult"></div>
+
+<div class="timer-bar-wrap">
+  <div class="timer-bar" id="timerBar" style="width:100%"></div>
+</div>
+
+<div class="pick-label" id="pickLabel">Pick your move!</div>
+<div class="choices-row">
+  <button class="choice-btn rock" onclick="pickChoice('rock')" id="btnRock">✊<span>Rock</span></button>
+  <button class="choice-btn paper" onclick="pickChoice('paper')" id="btnPaper">✋<span>Paper</span></button>
+  <button class="choice-btn scissors" onclick="pickChoice('scissors')" id="btnScissors">✌️<span>Scissors</span></button>
 </div>
 ```
 
   </div>
 
-  <div class="board-wrapper">
-    <div class="board-container" id="boardContainer">
-      <canvas class="board-canvas" id="boardCanvas"></canvas>
-    </div>
+  <div class="game-bottom">
+    <div class="status-text" id="statusText">Waiting for opponent...</div>
   </div>
-
-  <div class="game-controls">
-    <div class="turn-indicator opponent-turn" id="turnIndicator">⏳ Opponent's Turn</div>
-    <div class="dice-area">
-      <div class="dice-display" id="diceDisplay">
-        <div class="die" id="die1">⚀</div>
-        <div class="die" id="die2">⚀</div>
-      </div>
-    </div>
-    <div class="selected-hint" id="selectedHint"></div>
-    <div id="timerDisplay" style="text-align:center;font-size:13px;color:var(--text2);margin-bottom:4px;"></div>
-    <div class="controls-row">
-      <button class="ctrl-btn primary-action" id="rollBtn" onclick="rollDice()" disabled>🎲 Roll Dice</button>
-      <button class="ctrl-btn" onclick="toggleChat()">💬 Chat</button>
-    </div>
-  </div>
-
-  <div class="chat-area" id="chatArea">
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-input-row">
-      <input class="chat-input" id="chatInput" placeholder="Message..." maxlength="100">
-      <button class="chat-send" onclick="sendChat()">↑</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== INVITE ===== -->
-
-<div class="screen hidden" id="invite">
-  <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:40px">👥</div>
-    <div style="font-size:20px;font-weight:700;margin-top:8px">Play with Friend</div>
-    <div style="font-size:13px;color:var(--text2);margin-top:4px">Enter your friend's Telegram username</div>
-  </div>
-  <div style="width:100%;max-width:360px">
-    <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Friend's Telegram Username</div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <div style="color:var(--text2);font-size:20px;font-weight:700">@</div>
-      <input id="friendUsername" type="text" placeholder="username" maxlength="32" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;font-family:inherit;font-size:16px;color:var(--text);outline:none">
-    </div>
-  </div>
-  <div style="width:100%;max-width:360px">
-    <div style="font-size:12px;color:var(--text2);margin-bottom:6px;margin-top:12px">Bet Amount</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-      <div class="bet-btn" data-bet2="0" onclick="selectBet2(0)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
-        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">Free</span>
-        <span style="font-size:11px">🆓</span>
-      </div>
-      <div class="bet-btn" data-bet2="76" onclick="selectBet2(76)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
-        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">76</span>
-        <span style="font-size:11px">⭐</span>
-      </div>
-      <div class="bet-btn" data-bet2="152" onclick="selectBet2(152)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
-        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">152</span>
-        <span style="font-size:11px">⭐</span>
-      </div>
-      <div class="bet-btn" data-bet2="304" onclick="selectBet2(304)" style="border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--surface2);border:1.5px solid var(--border)">
-        <span style="font-size:14px;font-weight:700;display:block;color:var(--text)">304</span>
-        <span style="font-size:11px">⭐</span>
-      </div>
-    </div>
-  </div>
-  <button onclick="sendFriendInvite()" class="btn-primary" style="max-width:360px;margin-top:8px">📨 Send Invite</button>
-  <div id="inviteStatus" style="font-size:13px;color:var(--accent);text-align:center;min-height:20px;font-weight:600"></div>
-  <button class="btn-secondary" style="max-width:200px" onclick="goBack('lobby')">← Back</button>
 </div>
 
 <!-- ===== RESULT ===== -->
@@ -987,1062 +470,310 @@ min-height: 16px;
 <div class="screen hidden" id="result">
   <div class="result-icon" id="resultIcon">🏆</div>
   <div class="result-title" id="resultTitle">You Won!</div>
-  <div style="display:flex;gap:24px;justify-content:center;margin:8px 0">
-    <div style="text-align:center">
-      <div style="font-size:11px;color:var(--text2)">You</div>
-      <div style="font-size:36px;font-weight:900;color:var(--accent)" id="myScore">0</div>
-    </div>
-    <div style="font-size:28px;line-height:1;padding-top:8px;color:var(--text2)">—</div>
-    <div style="text-align:center">
-      <div style="font-size:11px;color:var(--text2)">Opponent</div>
-      <div style="font-size:36px;font-weight:900;color:var(--accent2)" id="oppScore">0</div>
-    </div>
-  </div>
-  <div style="font-size:12px;color:var(--text2);text-align:center">First to 3 wins!</div>
-  <div class="result-stars" id="resultStars">
+  <div class="result-stars">
     <div class="rs-label">Stars Change</div>
-    <div class="rs-value" id="resultStarsValue">+76 ⭐</div>
+    <div class="rs-val" id="rsVal">+140⭐</div>
   </div>
-  <div class="result-actions">
-    <button class="btn-primary" id="rematchBtn" onclick="requestRematch()">🔄 Rematch</button>
-    <button class="btn-primary" onclick="playAgain()">🎲 New Game</button>
-    <button class="btn-secondary" onclick="goBack('lobby')">🏠 Lobby</button>
+  <div class="result-btns">
+    <button class="btn-primary2" onclick="findOpponent()">🔍 Find New Opponent</button>
+    <button class="btn-sec2" onclick="playAgain()">🔄 Play Again (same bet)</button>
   </div>
 </div>
-
-<!-- Toast -->
 
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== CONFIG =====
+const SERVER_URL = 'https://backgammon-server-hato.onrender.com';
+const WIN_AMOUNTS = {76: 140, 152: 280, 304: 560};
+
 // ===== STATE =====
-let myStars = 0; // will be set from Telegram
-let selectedBet = 0; // 0 = free
-let playerName = 'Player';
-let myColor = 'white'; // white or black
-let gameState = null;
-let selectedPoint = -1;
-let validMoves = [];
+let playerName = '';
+let selectedBet = 0;
+let socket = null;
 let roomId = null;
-let rooms = [];
-let isMyTurn = false;
-let diceValues = [];
-let diceUsed = [];
-let myWins = 0;
-let oppWins = 0;
-let isFreePlay = false;
-let rematchRequested = false;
+let isRealMultiplayer = false;
+let myWins = 0, oppWins = 0;
+let currentRound = 1;
+let myPick = null;
+let oppPick = null;
+let timerInterval = null;
+let timerSecs = 15;
+let matchFound = false;
 
-// ===== SIMULATED OPPONENT NAMES =====
-const opponentNames = [
-  'Alex K','Sara M','Ryan B','Nina T',
-  'Amir S','Maria V','Hassan R','Fatima A',
-  'Mike J','Zara Q','David L','Nadia P'
-];
-
-// ===== BACKGAMMON BOARD STATE =====
-// points[0..23]: array of {count, color:'white'|'black'}
-// bar: {white:0, black:0}
-// home: {white:0, black:0}
-
-function initBoard() {
-  const pts = Array(24).fill(null).map(() => ({count:0, color:null}));
-  // Standard backgammon setup
-  pts[0]  = {count:2, color:'black'};
-  pts[5]  = {count:5, color:'white'};
-  pts[7]  = {count:3, color:'white'};
-  pts[11] = {count:5, color:'black'};
-  pts[12] = {count:5, color:'white'};
-  pts[16] = {count:3, color:'black'};
-  pts[18] = {count:5, color:'black'};
-  pts[23] = {count:2, color:'white'};
-  return {
-    points: pts,
-    bar: {white:0, black:0},
-    borneOff: {white:0, black:0}
-  };
-}
-
-// ===== CANVAS DRAWING =====
-let canvas, ctx;
-let boardW, boardH;
-const COLS = 13; // 6 + bar + 6
-const ROWS = 2;
-
-function initCanvas() {
-  canvas = document.getElementById('boardCanvas');
-  ctx = canvas.getContext('2d');
-  const container = document.getElementById('boardContainer');
-  const maxW = Math.min(window.innerWidth - 32, 460);
-  const maxH = Math.min(window.innerHeight - 240, 380);
-  boardW = maxW;
-  boardH = maxH;
-  canvas.width = boardW;
-  canvas.height = boardH;
-  container.style.width = boardW + 'px';
-  container.style.height = boardH + 'px';
-}
-
-function drawBoard() {
-  if (!ctx || !gameState) return;
-  const pts = gameState.points;
-  const cw = boardW;
-  const ch = boardH;
-  const barW = cw * 0.08;
-  const sideW = (cw - barW) / 2;
-  const ptW = sideW / 6;
-  const ptH = ch * 0.42;
-  const pieceR = Math.min(ptW * 0.42, 18);
-
-  // Background
-  ctx.fillStyle = '#1a3a2a';
-  ctx.fillRect(0, 0, cw, ch);
-
-  // Draw points
-  for (let i = 0; i < 24; i++) {
-    drawPoint(i, ptW, ptH, barW, sideW, cw, ch, pieceR);
-  }
-
-  // Draw pieces on points
-  for (let i = 0; i < 24; i++) {
-    drawPieces(i, pts[i], ptW, ptH, barW, sideW, cw, ch, pieceR);
-  }
-
-  // Bar
-  ctx.fillStyle = '#0f2a1a';
-  ctx.fillRect(sideW, 0, barW, ch);
-  ctx.strokeStyle = '#2d4a3a';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(sideW, 0, barW, ch);
-
-  // Bar pieces
-  const bar = gameState.bar;
-  if (bar.white > 0) drawBarPieces('white', bar.white, sideW, barW, ch, pieceR);
-  if (bar.black > 0) drawBarPieces('black', bar.black, sideW, barW, ch, pieceR);
-
-  // Highlight valid moves
-  if (selectedPoint >= 0) {
-    highlightMoves(validMoves, ptW, ptH, barW, sideW, cw, ch, pieceR);
-  }
-
-  // Borne off indicators
-  drawBorneOff(cw, ch, pieceR);
-
-  // Turn overlay if not my turn
-  if (!isMyTurn) {
-    ctx.fillStyle = 'rgba(0,0,0,0.15)';
-    ctx.fillRect(0, 0, cw, ch);
-  }
-}
-
-function getPointPos(index, ptW, ptH, barW, sideW, cw, ch) {
-  // Points 0-11: bottom row (right to left for white)
-  // Points 12-23: top row (left to right for white)
-  let x, y, dir;
-  if (index < 12) {
-    // bottom
-    y = ch;
-    dir = -1; // points go up
-    if (index < 6) {
-      // right side, indices 0-5 = cols 5-0 from right
-      x = sideW + barW + (5 - index) * ptW + ptW/2;
-    } else {
-      // left side, indices 6-11 = cols 5-0 from left
-      x = (11 - index) * ptW + ptW/2;
-    }
-  } else {
-    // top
-    y = 0;
-    dir = 1; // points go down
-    if (index < 18) {
-      // left side, indices 12-17 = cols 0-5 from left
-      x = (index - 12) * ptW + ptW/2;
-    } else {
-      // right side, indices 18-23 = cols 0-5 from right
-      x = sideW + barW + (index - 18) * ptW + ptW/2;
-    }
-  }
-  return {x, y, dir};
-}
-
-function drawPoint(index, ptW, ptH, barW, sideW, cw, ch, pieceR) {
-  const {x, y, dir} = getPointPos(index, ptW, ptH, barW, sideW, cw, ch);
-  const isSelected = index === selectedPoint;
-  const color = index % 2 === 0 ? '#8b5e3c' : '#2d6a4f';
-
-  ctx.beginPath();
-  ctx.moveTo(x - ptW/2 + 2, y);
-  ctx.lineTo(x + ptW/2 - 2, y);
-  ctx.lineTo(x, y + dir * ptH);
-  ctx.closePath();
-
-  if (isSelected) {
-    ctx.fillStyle = 'rgba(245,197,24,0.4)';
-  } else {
-    ctx.fillStyle = color;
-  }
-  ctx.fill();
-
-  // Point number (small)
-  ctx.fillStyle = 'rgba(255,255,255,0.25)';
-  ctx.font = `${Math.max(8, ptW * 0.25)}px Vazirmatn`;
-  ctx.textAlign = 'center';
-  const numY = y + dir * (ptH + 12 * dir);
-  ctx.fillText(index + 1, x, numY);
-}
-
-function drawPieces(index, point, ptW, ptH, barW, sideW, cw, ch, pieceR) {
-  if (!point || point.count === 0) return;
-  const {x, y, dir} = getPointPos(index, ptW, ptH, barW, sideW, cw, ch);
-  const maxStack = 5;
-  const count = point.count;
-  const color = point.color;
-
-  for (let i = 0; i < Math.min(count, maxStack); i++) {
-    const py = y + dir * (pieceR + i * pieceR * 2 + i * 2 + pieceR * 0.3);
-    drawPiece(x, py, pieceR, color, index === selectedPoint && i === count - 1);
-  }
-
-  if (count > maxStack) {
-    const py = y + dir * (pieceR + (maxStack-1) * pieceR * 2 + pieceR * 0.3);
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.font = `bold ${pieceR * 0.9}px Vazirmatn`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(count, x, py);
-    ctx.textBaseline = 'alphabetic';
-  }
-}
-
-function drawPiece(x, y, r, color, highlight) {
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  if (color === 'white') {
-    const g = ctx.createRadialGradient(x-r*0.3, y-r*0.3, 0, x, y, r);
-    g.addColorStop(0, '#fff8e1');
-    g.addColorStop(1, '#c8a96e');
-    ctx.fillStyle = g;
-  } else {
-    const g = ctx.createRadialGradient(x-r*0.3, y-r*0.3, 0, x, y, r);
-    g.addColorStop(0, '#3a3a5e');
-    g.addColorStop(1, '#0d0d1a');
-    ctx.fillStyle = g;
-  }
-  ctx.fill();
-  ctx.strokeStyle = highlight ? '#f5c518' : (color === 'white' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.15)');
-  ctx.lineWidth = highlight ? 2.5 : 1.5;
-  ctx.stroke();
-}
-
-function drawBarPieces(color, count, sideW, barW, ch, pieceR) {
-  const x = sideW + barW / 2;
-  const baseY = color === 'white' ? ch * 0.75 : ch * 0.25;
-  for (let i = 0; i < Math.min(count, 4); i++) {
-    const y = baseY + (color === 'white' ? -i : i) * pieceR * 2.2;
-    drawPiece(x, y, pieceR * 0.9, color, false);
-  }
-}
-
-function highlightMoves(moves, ptW, ptH, barW, sideW, cw, ch, pieceR) {
-  moves.forEach(to => {
-    if (to === 'bear-off') {
-      // highlight borne-off area
-      ctx.fillStyle = 'rgba(46,204,113,0.3)';
-      ctx.fillRect(cw - 20, 0, 20, ch);
-      return;
-    }
-    const {x, y, dir} = getPointPos(to, ptW, ptH, barW, sideW, cw, ch);
-    ctx.beginPath();
-    ctx.arc(x, y + dir * (pieceR + 2), pieceR * 1.3, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(46,204,113,0.4)';
-    ctx.fill();
-    ctx.strokeStyle = '#2ecc71';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+// ===== BET SELECTION =====
+function selectBet(amount) {
+  selectedBet = amount;
+  document.querySelectorAll('.bet-card').forEach(c => {
+    c.classList.toggle('active', parseInt(c.dataset.bet) === amount);
   });
 }
 
-function drawBorneOff(cw, ch) {
-  const bo = gameState.borneOff;
-  // small indicators on sides
-  ctx.fillStyle = 'rgba(245,197,24,0.8)';
-  ctx.font = 'bold 11px Vazirmatn';
-  ctx.textAlign = 'right';
-  ctx.fillText(`⭐${bo.white}`, cw - 4, ch - 8);
-  ctx.fillText(`⭐${bo.black}`, cw - 4, 18);
-}
-
-// ===== CANVAS CLICK =====
-function onCanvasClick(e) {
-  if (!isMyTurn || diceValues.length === 0) return;
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const mx = (e.clientX - rect.left) * scaleX;
-  const my = (e.clientY - rect.top) * scaleY;
-
-  const barW = boardW * 0.08;
-  const sideW = (boardW - barW) / 2;
-  const ptW = sideW / 6;
-
-  // Check if clicking bar first
-  if (gameState.bar[myColor] > 0) {
-    // must move from bar - check if clicking a valid point
-    if (selectedPoint === -2) {
-      // already selected bar, find target
-      const clickedPt = getClickedPoint(mx, my, ptW, boardH * 0.42, barW, sideW);
-      if (clickedPt >= 0 && validMoves.includes(clickedPt)) {
-        doMove(-2, clickedPt);
-      }
-    } else {
-      selectedPoint = -2;
-      validMoves = getBarMoves();
-      document.getElementById('selectedHint').textContent = 'From bar → select target point';
-      drawBoard();
-    }
+// ===== FIND OPPONENT =====
+function findOpponent() {
+  playerName = document.getElementById('playerName').value.trim();
+  if (!playerName || playerName.length < 2) {
+    showToast('⚠️ Please enter your name!');
+    document.getElementById('playerName').focus();
+    return;
+  }
+  if (!selectedBet) {
+    showToast('⚠️ Please select a bet!');
     return;
   }
 
-  const clickedPt = getClickedPoint(mx, my, ptW, boardH * 0.42, barW, sideW);
+  document.getElementById('mmBet').textContent = selectedBet + ' ⭐ → Win ' + WIN_AMOUNTS[selectedBet] + ' ⭐';
+  showScreen('matchmaking');
+  matchFound = false;
 
-  if (clickedPt < 0) {
-    selectedPoint = -1;
-    validMoves = [];
-    document.getElementById('selectedHint').textContent = '';
-    drawBoard();
-    return;
-  }
+  connectSocket();
 
-  if (selectedPoint >= 0) {
-    if (validMoves.includes(clickedPt)) {
-      doMove(selectedPoint, clickedPt);
-    } else if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
-      selectedPoint = clickedPt;
-      validMoves = getValidMovesFrom(clickedPt);
-      document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
-      drawBoard();
-    } else {
-      selectedPoint = -1;
-      validMoves = [];
-      document.getElementById('selectedHint').textContent = '';
-      drawBoard();
-    }
-  } else {
-    if (gameState.points[clickedPt]?.color === myColor && gameState.points[clickedPt]?.count > 0) {
-      selectedPoint = clickedPt;
-      validMoves = getValidMovesFrom(clickedPt);
-      document.getElementById('selectedHint').textContent = validMoves.length > 0 ? 'Select destination' : 'No valid move';
-      drawBoard();
-    }
+  function onConn() {
+    socket.emit('join_queue', { name: playerName, bet: selectedBet });
+    socket.emit('get_online');
   }
+  if (socket.connected) onConn();
+  else socket.once('connect', onConn);
+
+  socket.once('match_found', () => { matchFound = true; });
+
+  // No AI fallback - wait for real player
 }
 
-function getClickedPoint(mx, my, ptW, ptH, barW, sideW) {
-  const ch = boardH;
-  const cw = boardW;
-  for (let i = 0; i < 24; i++) {
-    const {x, y, dir} = getPointPos(i, ptW, ptH, barW, sideW, cw, ch);
-    // Check if within triangle area
-    const dy = Math.abs(my - y);
-    const maxDx = (ptW/2) * (1 - dy/ptH);
-    if (dy < ptH && Math.abs(mx - x) < maxDx + ptW*0.1) {
-      return i;
-    }
-  }
-  return -1;
+function cancelSearch() {
+  if (socket && socket.connected) socket.emit('cancel_queue');
+  showScreen('lobby');
 }
 
-// ===== BACKGAMMON LOGIC =====
-function getValidMovesFrom(from) {
-  const moves = [];
-  const remainingDice = getRemainingDice();
+// ===== SOCKET =====
+function connectSocket() {
+  if (socket && socket.connected) return;
+  socket = io(SERVER_URL, { transports: ['websocket', 'polling'] });
 
-  for (const die of new Set(remainingDice)) {
-    const to = myColor === 'white' ? from - die : from + die;
-
-    // Bear off
-    if (myColor === 'white' && to < 0 && canBearOff('white')) {
-      moves.push('bear-off');
-      continue;
-    }
-    if (myColor === 'black' && to > 23 && canBearOff('black')) {
-      moves.push('bear-off');
-      continue;
-    }
-
-    if (to < 0 || to > 23) continue;
-
-    const dest = gameState.points[to];
-    if (!dest || dest.count === 0 || dest.color === myColor || dest.count === 1) {
-      moves.push(to);
-    }
-  }
-  return [...new Set(moves)];
-}
-
-function getBarMoves() {
-  const moves = [];
-  const remainingDice = getRemainingDice();
-  for (const die of new Set(remainingDice)) {
-    const to = myColor === 'white' ? 24 - die : die - 1;
-    if (to >= 0 && to < 24) {
-      const dest = gameState.points[to];
-      if (!dest || dest.count === 0 || dest.color === myColor || dest.count === 1) {
-        moves.push(to);
-      }
-    }
-  }
-  return [...new Set(moves)];
-}
-
-function getRemainingDice() {
-  return diceValues.filter((_, i) => !diceUsed[i]);
-}
-
-function canBearOff(color) {
-  // All pieces must be in home board
-  const homeStart = color === 'white' ? 0 : 18;
-  const homeEnd = color === 'white' ? 5 : 23;
-  let outsideHome = 0;
-  for (let i = 0; i < 24; i++) {
-    if (i >= homeStart && i <= homeEnd) continue;
-    const pt = gameState.points[i];
-    if (pt && pt.color === color) outsideHome += pt.count;
-  }
-  outsideHome += gameState.bar[color];
-  return outsideHome === 0;
-}
-
-function doMove(from, to) {
-  const remainingDice = getRemainingDice();
-
-  let dieUsed;
-  if (from === -2) {
-    // from bar
-    dieUsed = myColor === 'white' ? 24 - to : to + 1;
-  } else if (to === 'bear-off') {
-    dieUsed = myColor === 'white' ? from + 1 : 24 - from;
-  } else {
-    dieUsed = Math.abs(to - from);
-  }
-
-  // Find and mark die as used
-  const dieIdx = diceValues.findIndex((v, i) => !diceUsed[i] && v === dieUsed);
-  if (dieIdx >= 0) {
-    diceUsed = [...diceUsed]; // clone to avoid reference issues
-    diceUsed[dieIdx] = true;
-  }
-
-  // Execute move
-  if (from >= 0) {
-    gameState.points[from].count--;
-    if (gameState.points[from].count === 0) gameState.points[from].color = null;
-  } else if (from === -2) {
-    gameState.bar[myColor]--;
-  }
-
-  if (to === 'bear-off') {
-    gameState.borneOff[myColor]++;
-  } else {
-    const dest = gameState.points[to];
-    if (dest && dest.color && dest.color !== myColor && dest.count === 1) {
-      // Hit!
-      const oppColor = myColor === 'white' ? 'black' : 'white';
-      gameState.bar[oppColor]++;
-      gameState.points[to] = {count: 1, color: myColor};
-      showToast('💥 Hit!');
-    } else {
-      if (!dest || dest.count === 0) {
-        gameState.points[to] = {count: 1, color: myColor};
-      } else {
-        gameState.points[to].count++;
-      }
-    }
-  }
-
-  selectedPoint = -1;
-  validMoves = [];
-  document.getElementById('selectedHint').textContent = '';
-
-  updateDiceDisplay();
-  drawBoard();
-
-  // Check win
-  if (gameState.borneOff[myColor] >= 15) {
-    endGame(true);
-    return;
-  }
-
-  // Auto-pass if no moves left
-  const remaining = getRemainingDice();
-  if (remaining.length === 0) {
-    setTimeout(() => passTurn(), 600);
-  } else {
-    document.getElementById('passBtn').disabled = false;
-    // Check if any valid moves remain
-    const hasMove = checkAnyValidMove();
-    if (!hasMove) {
-      showToast('No valid moves!');
-      setTimeout(() => passTurn(), 1000);
-    }
-  }
-}
-
-// ===== DICE =====
-const diceFaces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
-
-function rollDice() {
-  // Initial roll to decide who goes first
-  if (window._initialRoll) {
-    window._initialRoll = false;
-    const myRoll = Math.floor(Math.random() * 6) + 1;
-    const oppRoll = Math.floor(Math.random() * 6) + 1;
-    
-    const area = document.getElementById('diceDisplay');
-    area.innerHTML = `<div class="die">${diceFaces[myRoll-1]}</div><span style="color:var(--text2);padding:0 4px">vs</span><div class="die" style="background:#2a2a4a;color:#f5c518">${diceFaces[oppRoll-1]}</div>`;
-    
-    if (myRoll === oppRoll) {
-      showToast('Tie! Roll again!');
-      setTimeout(() => { window._initialRoll = true; }, 1500);
-      return;
-    }
-    
-    isMyTurn = myRoll < oppRoll; // lower number goes first
-    const msg = isMyTurn ? 
-      `You rolled ${myRoll}, opponent rolled ${oppRoll} — You go first! 🎲` :
-      `You rolled ${myRoll}, opponent rolled ${oppRoll} — Opponent goes first!`;
-    
-    addChatMessage('system', null, msg);
-    showToast(isMyTurn ? 'You go first! 🎲' : 'Opponent goes first!');
-    
-    setTimeout(() => {
-      area.innerHTML = '<div class="die" id="die1">⚀</div><div class="die" id="die2">⚀</div>';
-      document.getElementById('rollBtn').textContent = '🎲 Roll Dice';
-      updateTurnIndicator();
-      document.getElementById('rollBtn').disabled = !isMyTurn;
-      if (!isMyTurn) simulateOpponentTurn();
-    }, 2000);
-    return;
-  }
-  
-  if (!isMyTurn) return;
-  document.getElementById('rollBtn').disabled = true;
-
-  const d1 = Math.floor(Math.random() * 6) + 1;
-  const d2 = Math.floor(Math.random() * 6) + 1;
-
-  if (d1 === d2) {
-    diceValues = [d1, d1, d1, d1];
-    diceUsed = [false, false, false, false];
-  } else {
-    diceValues = [d1, d2];
-    diceUsed = [false, false];
-  }
-
-  // Animate
-  const die1 = document.getElementById('die1');
-  const die2 = document.getElementById('die2');
-  die1.classList.add('rolling');
-  die2.classList.add('rolling');
-  setTimeout(() => {
-    die1.classList.remove('rolling');
-    die2.classList.remove('rolling');
-    updateDiceDisplay();
-  }, 500);
-
-  document.getElementById('passBtn').disabled = false;
-
-  setTimeout(() => {
-    drawBoard();
-    const hasMove = checkAnyValidMove();
-    if (!hasMove) {
-      showToast('No valid moves!');
-      clearTurnTimer();
-      setTimeout(() => passTurn(), 1200);
-    } else {
-      startTurnTimer();
-    }
-  }, 550);
-}
-
-function checkAnyValidMove() {
-  if (gameState.bar[myColor] > 0) {
-    return getBarMoves().length > 0;
-  }
-  for (let i = 0; i < 24; i++) {
-    const pt = gameState.points[i];
-    if (pt && pt.color === myColor && pt.count > 0) {
-      if (getValidMovesFrom(i).length > 0) return true;
-    }
-  }
-  return false;
-}
-
-function updateDiceDisplay() {
-  const area = document.getElementById('diceDisplay');
-  area.innerHTML = '';
-  diceValues.forEach((v, i) => {
-    const d = document.createElement('div');
-    d.className = 'die' + (diceUsed[i] ? ' used' : '');
-    d.textContent = diceFaces[v - 1];
-    area.appendChild(d);
+  socket.on('connect', () => {
+    socket.emit('get_online');
   });
+
+  socket.on('online_count', ({ count }) => {
+    const el = document.getElementById('mmOnline');
+    if (el) el.textContent = count + ' online';
+  });
+
+  socket.on('match_found', ({ roomId: rid, white, black, bet }) => {
+    matchFound = true;
+    isRealMultiplayer = true;
+    roomId = rid;
+    const isWhite = white.id === socket.id;
+    const oppN = isWhite ? black.name : white.name;
+    startGame(oppN, true);
+  });
+
+  socket.on('opponent_choice', ({ choice }) => {
+    oppPick = choice;
+    if (myPick) resolveRound();
+  });
+
+  socket.on('opponent_left', () => {
+    showToast('⚠️ Opponent disconnected!');
+    setTimeout(() => endMatch(true, true), 1200);
+  });
+
+  socket.on('queue_cancelled', () => showScreen('lobby'));
+
+  socket.on('disconnect', () => {});
 }
 
-function passTurn() {
-  clearTurnTimer();
-  isMyTurn = false;
-  selectedPoint = -1;
-  validMoves = [];
-  diceValues = [];
-  diceUsed = [];
-  document.getElementById('rollBtn').disabled = true;
-  document.getElementById('selectedHint').textContent = '';
-  updateDiceDisplay();
-  updateTurnIndicator();
-  drawBoard();
+// ===== GAME =====
+function startGame(oppN, real) {
+  isRealMultiplayer = !!real;
+  myWins = 0; oppWins = 0; currentRound = 1;
+  myPick = null; oppPick = null;
+
+  const myInitial = (playerName || 'P')[0].toUpperCase();
+  const oppInitial = (oppN || 'O')[0].toUpperCase();
+
+  document.getElementById('myNameEl').textContent = playerName;
+  document.getElementById('myAvatar').textContent = myInitial;
+  document.getElementById('oppNameEl').textContent = oppN;
+  document.getElementById('oppAvatar').textContent = oppInitial;
+  document.getElementById('potVal').textContent = WIN_AMOUNTS[selectedBet] + '⭐';
+
+  showScreen('game');
+  resetRoundUI();
+  updateScoreUI();
+  startTimer();
+}
+
+function resetRoundUI() {
+  myPick = null; oppPick = null;
+  document.getElementById('myChoiceDisplay').textContent = '?';
+  document.getElementById('myChoiceDisplay').className = 'choice-display';
+  document.getElementById('oppChoiceDisplay').textContent = '?';
+  document.getElementById('oppChoiceDisplay').className = 'choice-display';
+  document.getElementById('roundResult').textContent = '';
+  document.getElementById('roundResult').className = 'round-result';
+  document.getElementById('roundInfo').textContent = 'ROUND ' + currentRound + ' · FIRST TO 3';
+  document.getElementById('pickLabel').textContent = 'Pick your move!';
+  document.getElementById('statusText').textContent = isRealMultiplayer ? 'Choose in time!' : 'Make your pick!';
+  enableButtons(true);
+}
+
+const EMOJIS = { rock: '✊', paper: '✋', scissors: '✌️' };
+
+function pickChoice(choice) {
+  if (myPick) return;
+  myPick = choice;
+  clearTimer();
+  enableButtons(false);
+
+  document.getElementById('myChoiceDisplay').textContent = EMOJIS[choice];
+  document.getElementById('pickLabel').textContent = 'Waiting for opponent...';
+  document.getElementById('statusText').textContent = 'You picked ' + choice + '!';
+
+  // Highlight selected button
+  ['rock','paper','scissors'].forEach(c => {
+    document.getElementById('btn' + c.charAt(0).toUpperCase() + c.slice(1)).classList.toggle('selected', c === choice);
+  });
 
   if (isRealMultiplayer && socket) {
-    socket.emit('pass_turn', { roomId });
+    socket.emit('rps_choice', { roomId, choice });
+    // Wait for opponent's choice via socket
   } else {
-    simulateOpponentTurn();
+    // Bot picks after short delay
+    setTimeout(() => {
+      const botChoices = ['rock','paper','scissors'];
+      oppPick = botChoices[Math.floor(Math.random() * 3)];
+      resolveRound();
+    }, 800 + Math.random() * 600);
   }
 }
 
-function simulateOpponentTurn() {
-  const oppColor = myColor === 'white' ? 'black' : 'white';
-  setTimeout(() => {
-    // Roll for opponent - show dice
-    const d1 = Math.floor(Math.random() * 6) + 1;
-    const d2 = Math.floor(Math.random() * 6) + 1;
-    const oppDice = d1 === d2 ? [d1,d1,d1,d1] : [d1,d2];
-    let oppDiceUsed = oppDice.map(() => false);
+function resolveRound() {
+  clearTimer();
+  const oEl = document.getElementById('oppChoiceDisplay');
+  oEl.textContent = EMOJIS[oppPick];
+  oEl.classList.add('revealed');
 
-    // Show opponent dice
-    const area = document.getElementById('diceDisplay');
-    area.innerHTML = '';
-    oppDice.forEach(v => {
-      const d = document.createElement('div');
-      d.className = 'die';
-      d.style.background = '#2a2a4a';
-      d.style.color = '#f5c518';
-      d.textContent = diceFaces[v - 1];
-      area.appendChild(d);
-    });
-
-    // Make moves for opponent (simplified AI)
-    let movesLeft = [...oppDice];
-    let attempts = 0;
-
-    function makeOpponentMove() {
-      if (movesLeft.length === 0 || attempts > 20) {
-        // opponent done, my turn
-        setTimeout(() => {
-          isMyTurn = true;
-          updateTurnIndicator();
-          document.getElementById('rollBtn').disabled = false;
-          drawBoard();
-
-          // Check if opponent won
-          if (gameState.borneOff[oppColor] >= 15) {
-            endGame(false);
-          }
-        }, 400);
-        return;
-      }
-
-      attempts++;
-      const die = movesLeft[0];
-
-      // Find best move for opponent
-      let moved = false;
-      if (gameState.bar[oppColor] > 0) {
-        const to = oppColor === 'white' ? 24 - die : die - 1;
-        if (to >= 0 && to < 24) {
-          const dest = gameState.points[to];
-          if (!dest || dest.count === 0 || dest.color === oppColor || dest.count === 1) {
-            // do move
-            gameState.bar[oppColor]--;
-            if (dest && dest.color && dest.color !== oppColor && dest.count === 1) {
-              gameState.bar[myColor]++;
-              gameState.points[to] = {count:1, color:oppColor};
-            } else {
-              if (!dest || dest.count === 0) gameState.points[to] = {count:1, color:oppColor};
-              else gameState.points[to].count++;
-            }
-            movesLeft.shift();
-            moved = true;
-          }
-        }
-      }
-
-      if (!moved) {
-        // find a piece to move
-        const candidates = [];
-        for (let i = 0; i < 24; i++) {
-          const pt = gameState.points[i];
-          if (pt && pt.color === oppColor && pt.count > 0) {
-            const to = oppColor === 'white' ? i - die : i + die;
-            if (oppColor === 'white' && to < 0 && canBearOffColor(oppColor)) {
-              candidates.push({from:i, to:'bear-off', priority: 10});
-            } else if (oppColor === 'black' && to > 23 && canBearOffColor(oppColor)) {
-              candidates.push({from:i, to:'bear-off', priority: 10});
-            } else if (to >= 0 && to < 24) {
-              const dest = gameState.points[to];
-              if (!dest || dest.count === 0 || dest.color === oppColor) {
-                candidates.push({from:i, to, priority:1});
-              } else if (dest.color !== oppColor && dest.count === 1) {
-                candidates.push({from:i, to, priority:5}); // hit!
-              }
-            }
-          }
-        }
-        if (candidates.length > 0) {
-          candidates.sort((a,b) => b.priority - a.priority);
-          const mv = candidates[0];
-          gameState.points[mv.from].count--;
-          if (gameState.points[mv.from].count === 0) gameState.points[mv.from].color = null;
-          if (mv.to === 'bear-off') {
-            gameState.borneOff[oppColor]++;
-          } else {
-            const dest = gameState.points[mv.to];
-            if (dest && dest.color && dest.color !== oppColor && dest.count === 1) {
-              gameState.bar[myColor]++;
-              gameState.points[mv.to] = {count:1, color:oppColor};
-            } else {
-              if (!dest || dest.count === 0) gameState.points[mv.to] = {count:1, color:oppColor};
-              else gameState.points[mv.to].count++;
-            }
-          }
-          movesLeft.shift();
-          moved = true;
-        } else {
-          movesLeft.shift(); // skip this die
-        }
-      }
-
-      drawBoard();
-      setTimeout(makeOpponentMove, moved ? 450 : 50);
-    }
-
-    drawBoard();
-    setTimeout(makeOpponentMove, 600);
-  }, 800);
-}
-
-function canBearOffColor(color) {
-  const homeStart = color === 'white' ? 0 : 18;
-  const homeEnd = color === 'white' ? 5 : 23;
-  let outside = 0;
-  for (let i = 0; i < 24; i++) {
-    if (i >= homeStart && i <= homeEnd) continue;
-    const pt = gameState.points[i];
-    if (pt && pt.color === color) outside += pt.count;
-  }
-  outside += gameState.bar[color];
-  return outside === 0;
-}
-
-// ===== GAME FLOW =====
-function updateTurnIndicator() {
-  const el = document.getElementById('turnIndicator');
-  const score = myWins + ' — ' + oppWins + '  (First to 3)';
-  if (isMyTurn) {
-    el.textContent = '🎲 Your turn! Roll dice  |  ' + score;
-    el.className = 'turn-indicator my-turn';
-  } else {
-    el.textContent = "⏳ Opponent's turn...  |  " + score;
-    el.className = 'turn-indicator opponent-turn';
-  }
-}
-
-function endGame(iWon) {
-  if (iWon) myWins++; else oppWins++;
+  const result = getRoundResult(myPick, oppPick);
+  const resultEl = document.getElementById('roundResult');
+  const myEl = document.getElementById('myChoiceDisplay');
 
   setTimeout(() => {
-    // Update scoreboard
-    document.getElementById('myScore').textContent = myWins;
-    document.getElementById('oppScore').textContent = oppWins;
-
-    // Check if match is over (first to 3)
-    const matchOver = myWins >= 3 || oppWins >= 3;
-
-    document.getElementById('resultIcon').textContent = iWon ? '🏆' : '💔';
-    document.getElementById('resultTitle').textContent = iWon ? 'You Won! 🎉' : 'You Lost 😔';
-    document.getElementById('resultTitle').className = 'result-title ' + (iWon ? 'win' : 'lose');
-
-    // Stars only change when match is fully over
-    const starsEl = document.getElementById('resultStars');
-    const rematchBtn = document.getElementById('rematchBtn');
-
-    if (isFreePlay) {
-      starsEl.style.display = 'none';
-    } else if (matchOver) {
-      const change = myWins >= 3 ? selectedBet : -selectedBet;
-      myStars += change;
-      document.getElementById('resultStarsValue').textContent = (change > 0 ? '+' : '') + change + ' ⭐';
-      document.getElementById('resultStarsValue').className = 'rs-value ' + (change > 0 ? 'win' : 'lose');
-      starsEl.style.display = 'block';
+    if (result === 'win') {
+      myWins++;
+      resultEl.textContent = '✅ You win this round!';
+      resultEl.className = 'round-result win';
+      myEl.classList.add('win-highlight');
+      oEl.classList.add('lose-highlight');
+    } else if (result === 'lose') {
+      oppWins++;
+      resultEl.textContent = '❌ Opponent wins!';
+      resultEl.className = 'round-result lose';
+      myEl.classList.add('lose-highlight');
+      oEl.classList.add('win-highlight');
     } else {
-      starsEl.style.display = 'none';
+      resultEl.textContent = '🤝 Draw!';
+      resultEl.className = 'round-result draw';
     }
 
-    // Show rematch only if match not over
-    rematchBtn.style.display = matchOver ? 'none' : 'block';
+    updateScoreUI();
 
-    // Show match winner banner if over
-    if (matchOver) {
-      document.getElementById('resultTitle').textContent =
-        myWins >= 3 ? '🏆 You won the match!' : '💔 You lost the match!';
+    // Check match winner
+    if (myWins >= 3 || oppWins >= 3) {
+      setTimeout(() => endMatch(myWins >= 3, false), 1200);
+    } else {
+      currentRound++;
+      setTimeout(() => {
+        resetRoundUI();
+        if (!isRealMultiplayer || true) startTimer();
+      }, 1500);
     }
-
-    showScreen('result');
-  }, 800);
+  }, 300);
 }
 
-// ===== UI FLOW =====
+function getRoundResult(my, opp) {
+  if (my === opp) return 'draw';
+  if ((my === 'rock' && opp === 'scissors') ||
+      (my === 'scissors' && opp === 'paper') ||
+      (my === 'paper' && opp === 'rock')) return 'win';
+  return 'lose';
+}
+
+function updateScoreUI() {
+  document.getElementById('myScore').textContent = myWins;
+  document.getElementById('oppScore').textContent = oppWins;
+}
+
+function enableButtons(on) {
+  ['Rock','Paper','Scissors'].forEach(c => {
+    document.getElementById('btn' + c).disabled = !on;
+  });
+}
+
+// ===== TIMER =====
+function startTimer() {
+  clearTimer();
+  timerSecs = 15;
+  updateTimerBar();
+  timerInterval = setInterval(() => {
+    timerSecs--;
+    updateTimerBar();
+    if (timerSecs <= 0) {
+      clearTimer();
+      if (!myPick) {
+        // Auto-pick random
+        const choices = ['rock','paper','scissors'];
+        pickChoice(choices[Math.floor(Math.random() * 3)]);
+        showToast('⏰ Time up! Random pick!');
+      }
+    }
+  }, 1000);
+}
+
+function clearTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function updateTimerBar() {
+  const bar = document.getElementById('timerBar');
+  const pct = (timerSecs / 15) * 100;
+  bar.style.width = pct + '%';
+  bar.style.background = timerSecs <= 5 ? 'var(--lose)' : timerSecs <= 8 ? 'var(--gold)' : 'var(--win)';
+}
+
+// ===== END MATCH =====
+function endMatch(iWon, opponentLeft) {
+  clearTimer();
+  const icon = iWon ? '🏆' : '💔';
+  const title = opponentLeft ? 'Opponent Left — You Win!' : (iWon ? 'You Won! 🎉' : 'You Lost 😔');
+  const cls = iWon ? 'win' : 'lose';
+  const starsChange = iWon ? WIN_AMOUNTS[selectedBet] : -selectedBet;
+
+  document.getElementById('resultIcon').textContent = icon;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultTitle').className = 'result-title ' + cls;
+  document.getElementById('rsVal').textContent = (starsChange > 0 ? '+' : '') + starsChange + '⭐';
+  document.getElementById('rsVal').className = 'rs-val ' + cls;
+
+  showScreen('result');
+}
+
+function playAgain() {
+  const name = playerName;
+  const bet = selectedBet;
+  showScreen('lobby');
+  document.getElementById('playerName').value = name;
+  // Re-select bet
+  setTimeout(() => selectBet(bet), 50);
+  setTimeout(() => findOpponent(), 100);
+}
+
+// ===== UI =====
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
 }
 
-function goBack(to) {
-  showScreen(to);
-  if (to === 'lobby') {
-    document.getElementById('myStars').textContent = myStars;
-  }
-}
-
-function selectBet(amount) {
-  selectedBet = amount;
-  document.querySelectorAll('.bet-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.bet) === amount);
-  });
-}
-
-function showRooms(mode) {
-  playerName = document.getElementById('playerName').value.trim() || 'Player';
-  isFreePlay = (mode === 'free');
-  if (isFreePlay) selectedBet = 0;
-  if (!isFreePlay && selectedBet === 0) selectedBet = 76;
-
-  document.getElementById('waitingBetDisplay').textContent = isFreePlay ? 'Free 🆓' : selectedBet + ' ⭐';
-  document.getElementById('waitingOnline').textContent = 'Searching...';
-  showScreen('matchmaking');
-
-  connectSocket();
-  let matchFound = false;
-
-  function onConnect() {
-    socket.emit('join_queue', { name: playerName, bet: selectedBet, stars: myStars });
-    socket.emit('get_online');
-  }
-
-  if (socket.connected) onConnect();
-  else socket.once('connect', onConnect);
-
-  socket.once('match_found', () => { matchFound = true; });
-
-  if (isFreePlay) {
-    // Free: fallback AI after 5s
-    setTimeout(() => {
-      if (!matchFound) {
-        isRealMultiplayer = false;
-        if (socket) socket.emit('cancel_queue');
-        const oppN = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-        startGame(oppN);
-      }
-    }, 5000);
-  }
-  // Paid: no AI fallback - keep waiting
-}
-
-function generateRooms() {
-  rooms = [];
-  const count = Math.floor(Math.random() * 4) + 2;
-  for (let i = 0; i < count; i++) {
-    const bet = isFreePlay ? 0 : [76,152,304,760][Math.floor(Math.random() * 4)];
-    const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-    rooms.push({id: Math.random().toString(36).substr(2,8), name, bet, waiting: Math.random() > 0.5});
-  }
-  renderRooms();
-  const onlineCount = Math.floor(Math.random() * 40) + 8;
-  document.getElementById('onlineCount').textContent = onlineCount + ' Online';
-}
-
-function renderRooms() {
-  const list = document.getElementById('roomsList');
-  const filtered = isFreePlay ? rooms.filter(r => r.bet === 0) : rooms.filter(r => r.bet === selectedBet);
-
-  if (filtered.length === 0) {
-    // Auto-find opponent after a moment
-    list.innerHTML = `
-      <div class="empty-rooms">
-        <div class="empty-icon">🔍</div>
-        <div>Looking for opponents...</div>
-        <div style="font-size:12px">Finding a match for you</div>
-      </div>
-    `;
-    setTimeout(() => autoMatch(), 2000);
-    return;
-  }
-
-  list.innerHTML = filtered.map((r,i) => `
-    <div class="room-card" style="animation-delay:${i*0.05}s" onclick="joinRoom('${r.id}','${r.name}')">
-      <div class="room-left">
-        <div class="room-avatar">${r.name[0]}</div>
-        <div class="room-info">
-          <div class="room-name">${r.name}</div>
-          <div class="room-meta">${r.waiting ? '⏳ Waiting' : '🟢 Ready'}</div>
-        </div>
-      </div>
-      <div class="room-right">
-        <div class="room-bet">${r.bet === 0 ? '🆓 Free' : '⭐ ' + r.bet}</div>
-        <div class="join-badge">Join</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function autoMatch() {
-  const name = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-  startGame(name);
-}
-
-function joinRoom(id, oppNameParam) {
-  roomId = id;
-  startGame(oppNameParam);
-}
-
-function createRoom() {
-  playerName = document.getElementById('playerName').value.trim() || 'Player';
-  if (myStars < selectedBet) {
-    showToast('⭐ Not enough Stars!');
-    return;
-  }
-  document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
-  const online = Math.floor(Math.random() * 40) + 8;
-  document.getElementById('waitingOnline').textContent = online + ' نفر Online';
-  showScreen('matchmaking');
-
-  // Simulate finding opponent after 2-4 seconds
-  const delay = 2000 + Math.random() * 2000;
-  setTimeout(() => {
-    const oppN = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-    startGame(oppN);
-  }, delay);
-}
-
-function cancelSearch() {
-  showScreen('lobby');
-}
-
-function startGame(oppN) {
-  // Setup game
-  gameState = initBoard();
-  myColor = Math.random() > 0.5 ? 'white' : 'black';
-  isMyTurn = myColor === 'white'; // white goes first
-  diceValues = [];
-  diceUsed = [];
-  selectedPoint = -1;
-  validMoves = [];
-
-  const oppColor = myColor === 'white' ? 'black' : 'white';
-
-  // Update UI
-  document.getElementById('myNameDisplay').textContent = playerName || 'Me';
-  document.getElementById('myAvatar').textContent = (playerName || 'P')[0];
-  document.getElementById('oppName').textContent = oppN;
-  document.getElementById('oppAvatar').textContent = oppN[0];
-  document.getElementById('potDisplay').textContent = isFreePlay ? 'Free' : (selectedBet * 2) + '⭐';
-
-  // Show score reset
-  myWins = 0; oppWins = 0;
-
-  showScreen('game');
-
-  setTimeout(() => {
-    initCanvas();
-    canvas.addEventListener('click', onCanvasClick);
-    canvas.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      const t = e.changedTouches[0];
-      onCanvasClick(t);
-    });
-    drawBoard();
-    updateTurnIndicator();
-
-    addChatMessage('system', null, `Game started! ${playerName} (${myColor === 'white' ? 'سفید' : 'سیاه'}) vs ${oppN}`);
-
-    document.getElementById('rollBtn').disabled = !isMyTurn;
-
-    if (!isMyTurn) {
-      // Opponent goes first
-      setTimeout(() => simulateOpponentTurn(), 1000);
-    }
-  }, 100);
-}
-
-function playAgain() {
-  myWins = 0;
-  oppWins = 0;
-  showScreen('lobby');
-}
-
-function requestRematch() {
-  // Start new game round directly
-  myWins = myWins; // keep scores
-  oppWins = oppWins;
-  const oppN = document.getElementById('oppName').textContent;
-  startGame(oppN);
-}
-
-// ===== CHAT =====
-function toggleChat() {
-  const chatArea = document.getElementById('chatArea');
-  chatArea.classList.toggle('open');
-  if (chatArea.classList.contains('open')) {
-    document.getElementById('chatInput').focus();
-  }
-}
-
-function addChatMessage(type, name, text) {
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'chat-msg ' + type;
-  if (type !== 'system') {
-    div.innerHTML = `<span class="msg-name">${name}:</span>${text}`;
-  } else {
-    div.textContent = text;
-  }
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function sendChat() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  addChatMessage('me', playerName || 'Me', text);
-  input.value = '';
-
-  // Simulate opponent response sometimes
-  if (Math.random() > 0.6) {
-    const responses = ['😄','Nice!','Well played!','Hmm...','🎲','Good game!','Not bad!',"Let's see 😏"];
-    const oppN = document.getElementById('oppName').textContent;
-    setTimeout(() => {
-      addChatMessage('opp', oppN, responses[Math.floor(Math.random() * responses.length)]);
-    }, 800 + Math.random() * 1500);
-  }
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && document.getElementById('chatInput') === document.activeElement) {
-    sendChat();
-  }
-});
-
-// ===== TOAST =====
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -2050,310 +781,13 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ===== INIT =====
-document.getElementById('playerName').addEventListener('input', (e) => {
-  playerName = e.target.value;
+// ===== SOCKET RPS EVENTS =====
+// We need to add rps_choice to the server too, but for now handle client-side
+// When real multiplayer: emit choice, wait for opponent_choice
+document.addEventListener('DOMContentLoaded', () => {
+  // Pre-select first bet
+  selectBet(76);
 });
-
-
-// ===== NAME VALIDATION =====
-function findOpponent() {
-  const name = document.getElementById('playerName').value.trim();
-  if (!name || name.length < 2) {
-    showToast('⚠️ Please enter your name first!');
-    document.getElementById('playerName').focus();
-    return;
-  }
-  if (selectedBet === 0) {
-    showToast('⚠️ Please select a bet amount!');
-    return;
-  }
-  showRooms('paid');
-}
-
-// ===== INVITE / PLAY WITH FRIEND =====
-let friendBet = 0;
-
-function selectBet2(amount) {
-  friendBet = amount;
-  document.querySelectorAll('[data-bet2]').forEach(b => {
-    const isActive = parseInt(b.dataset.bet2) === amount;
-    b.style.borderColor = isActive ? 'var(--accent)' : 'var(--border)';
-    b.style.background = isActive ? 'rgba(245,197,24,0.12)' : 'var(--surface2)';
-  });
-}
-
-function showInvite() {
-  const name = document.getElementById('playerName').value.trim();
-  if (!name || name.length < 2) {
-    showToast('⚠️ Please enter your name first!');
-    return;
-  }
-  document.getElementById('friendUsername').value = '';
-  document.getElementById('inviteStatus').textContent = '';
-  friendBet = 0;
-  showScreen('invite');
-}
-
-function sendFriendInvite() {
-  const username = document.getElementById('friendUsername').value.trim().replace('@','');
-  if (!username) { showToast('⚠️ Enter friend username'); return; }
-  const name = document.getElementById('playerName').value.trim() || 'Player';
-  
-  connectSocket();
-
-  function onConn() {
-    socket.emit('invite_friend', { 
-      fromName: name, 
-      toUsername: username, 
-      bet: friendBet 
-    });
-    document.getElementById('inviteStatus').textContent = '⏳ Waiting for @' + username + '...';
-    
-    // Also show matchmaking screen waiting
-    document.getElementById('waitingBetDisplay').textContent = friendBet === 0 ? 'Free 🆓' : friendBet + ' ⭐';
-    document.getElementById('waitingOnline').textContent = 'Waiting for @' + username;
-    showScreen('matchmaking');
-  }
-  
-  if (socket.connected) onConn();
-  else socket.once('connect', onConn);
-}
-
-// ===== TIMER =====
-let turnTimer = null;
-let timerSeconds = 60;
-
-function startTurnTimer() {
-  clearTurnTimer();
-  timerSeconds = 60;
-  updateTimerDisplay();
-  turnTimer = setInterval(() => {
-    timerSeconds--;
-    updateTimerDisplay();
-    if (timerSeconds <= 0) {
-      clearTurnTimer();
-      showToast('⏰ Time up! Turn passed.');
-      passTurn();
-    }
-  }, 1000);
-}
-
-function clearTurnTimer() {
-  if (turnTimer) { clearInterval(turnTimer); turnTimer = null; }
-  document.getElementById('timerDisplay').textContent = '';
-}
-
-function updateTimerDisplay() {
-  const el = document.getElementById('timerDisplay');
-  const color = timerSeconds <= 10 ? '#e74c3c' : timerSeconds <= 20 ? '#f5c518' : '#8888aa';
-  el.innerHTML = '<span style="color:' + color + '">⏱ ' + timerSeconds + 's</span>';
-}
-
-// ===== SOCKET.IO REAL MULTIPLAYER =====
-const SERVER_URL = 'https://backgammon-server-hato.onrender.com';
-let socket = null;
-let isRealMultiplayer = false;
-
-function connectSocket() {
-  if (socket && socket.connected) return;
-  socket = io(SERVER_URL, { transports: ['websocket', 'polling'] });
-
-  socket.on('connect', () => {
-    console.log('✅ Connected to server');
-    socket.emit('get_online');
-  });
-
-  socket.on('online_count', ({ count }) => {
-    const els = document.querySelectorAll('#waitingOnline, #onlineCount');
-    els.forEach(el => { if(el) el.textContent = count + ' نفر Online'; });
-  });
-
-  socket.on('waiting', () => {
-    // already on matchmaking screen
-  });
-
-  socket.on('match_found', ({ roomId: rid, white, black, bet }) => {
-    isRealMultiplayer = true;
-    roomId = rid;
-    const isWhite = white.id === socket.id;
-    myColor = isWhite ? 'white' : 'black';
-    const oppN = isWhite ? black.name : white.name;
-    startGameReal(oppN);
-  });
-
-  socket.on('opponent_dice', ({ dice }) => {
-    if (isMyTurn) return;
-    diceValues = dice;
-    diceUsed = dice.map(() => false);
-    updateDiceDisplay();
-  });
-
-  socket.on('opponent_move', ({ from, to, diceUsed: du }) => {
-    if (isMyTurn) return;
-    const oppColor = myColor === 'white' ? 'black' : 'white';
-    // Apply opponent move to board
-    applyMove(from, to, oppColor);
-    diceUsed = du;
-    updateDiceDisplay();
-    drawBoard();
-  });
-
-  socket.on('opponent_passed', () => {
-    isMyTurn = true;
-    diceValues = [];
-    diceUsed = [];
-    updateDiceDisplay();
-    updateTurnIndicator();
-    document.getElementById('rollBtn').disabled = false;
-    drawBoard();
-    showToast('Your turn! Roll the dice 🎲');
-  });
-
-  socket.on('opponent_chat', ({ name, text }) => {
-    addChatMessage('opp', name, text);
-  });
-
-  socket.on('game_result', ({ winnerId, bet }) => {
-    const iWon = winnerId === socket.id;
-    endGame(iWon);
-  });
-
-  socket.on('opponent_left', () => {
-    showToast('⚠️ Opponent left the game!');
-    setTimeout(() => endGame(true), 1500);
-  });
-
-  socket.on('queue_cancelled', () => {
-    showScreen('lobby');
-  });
-
-  socket.on('disconnect', () => {
-    console.log('❌ Disconnected');
-  });
-
-  // Invite / room code events
-  socket.on('code_match_found', ({ roomId: rid, white, black, bet: b }) => {
-    isRealMultiplayer = true;
-    roomId = rid;
-    selectedBet = b;
-    isFreePlay = b === 0;
-    const isWhite = white.id === socket.id;
-    myColor = isWhite ? 'white' : 'black';
-    const oppN = isWhite ? black.name : white.name;
-    startGameReal(oppN);
-  });
-
-  socket.on('code_not_found', () => {
-    document.getElementById('inviteStatus').textContent = '❌ Code not found. Try again.';
-  });
-}
-
-function applyMove(from, to, color) {
-  if (from === -2) {
-    gameState.bar[color]--;
-  } else if (from >= 0) {
-    gameState.points[from].count--;
-    if (gameState.points[from].count === 0) gameState.points[from].color = null;
-  }
-  if (to === 'bear-off') {
-    gameState.borneOff[color]++;
-  } else if (to >= 0) {
-    const dest = gameState.points[to];
-    const oppColor = color === 'white' ? 'black' : 'white';
-    if (dest && dest.color === oppColor && dest.count === 1) {
-      gameState.bar[oppColor]++;
-      gameState.points[to] = { count: 1, color };
-    } else {
-      if (!dest || dest.count === 0) gameState.points[to] = { count: 1, color };
-      else gameState.points[to].count++;
-    }
-  }
-}
-
-function startGameReal(oppN) {
-  gameState = initBoard();
-  isMyTurn = myColor === 'white';
-  diceValues = [];
-  diceUsed = [];
-  selectedPoint = -1;
-  validMoves = [];
-
-  document.getElementById('myNameDisplay').textContent = playerName || 'Me';
-  document.getElementById('myAvatar').textContent = (playerName || 'م')[0];
-  document.getElementById('oppName').textContent = oppN;
-  document.getElementById('oppAvatar').textContent = oppN[0];
-  document.getElementById('potDisplay').textContent = (selectedBet * 2) + '⭐';
-  if (!isFreePlay && selectedBet > 0) myStars -= selectedBet;
-
-  showScreen('game');
-  setTimeout(() => {
-    initCanvas();
-    canvas.addEventListener('click', onCanvasClick);
-    canvas.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      onCanvasClick(e.changedTouches[0]);
-    });
-    drawBoard();
-    updateTurnIndicator();
-    addChatMessage('system', null, `Game started! You are`);
-    document.getElementById('rollBtn').disabled = !isMyTurn;
-  }, 100);
-}
-
-// Override createRoom for real multiplayer
-const _origCreateRoom = createRoom;
-function createRoom() {
-  playerName = document.getElementById('playerName').value.trim() || 'Player';
-  if (myStars < selectedBet) { showToast('⭐ Not enough Stars!'); return; }
-  document.getElementById('waitingBetDisplay').textContent = selectedBet + ' ⭐';
-  showScreen('matchmaking');
-  connectSocket();
-  socket.emit('join_queue', { name: playerName, bet: selectedBet, stars: myStars });
-}
-
-// Override cancelSearch
-function cancelSearch() {
-  if (socket && socket.connected) socket.emit('cancel_queue');
-  showScreen('lobby');
-}
-
-// Override sendChat for real multiplayer
-const _origSendChat = sendChat;
-function sendChat() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  addChatMessage('me', playerName || 'Me', text);
-  input.value = '';
-  if (isRealMultiplayer && socket) {
-    socket.emit('chat_message', { roomId, text });
-  }
-}
-
-// Override passTurn for real multiplayer
-const _origPassTurn = passTurn;
-function passTurn() {
-  isMyTurn = false;
-  selectedPoint = -1;
-  validMoves = [];
-  diceValues = [];
-  diceUsed = [];
-  document.getElementById('rollBtn').disabled = true;
-  document.getElementById('passBtn').disabled = true;
-  document.getElementById('selectedHint').textContent = '';
-  updateDiceDisplay();
-  updateTurnIndicator();
-  drawBoard();
-  if (isRealMultiplayer && socket) {
-    socket.emit('pass_turn', { roomId });
-  } else {
-    simulateOpponentTurn();
-  }
-}
-
-// Connect on load
-try { connectSocket(); } catch(e) { console.log('Socket error:', e); }
 </script>
 
 </body>
