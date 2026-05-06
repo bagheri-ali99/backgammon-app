@@ -1384,7 +1384,10 @@ dieUsed = Math.abs(to - from);
 
 // Find and mark die as used
 const dieIdx = diceValues.findIndex((v, i) => !diceUsed[i] && v === dieUsed);
-if (dieIdx >= 0) diceUsed[dieIdx] = true;
+if (dieIdx >= 0) {
+diceUsed = [...diceUsed]; // clone to avoid reference issues
+diceUsed[dieIdx] = true;
+}
 
 // Execute move
 if (from >= 0) {
@@ -1431,8 +1434,13 @@ const remaining = getRemainingDice();
 if (remaining.length === 0) {
 setTimeout(() => passTurn(), 600);
 } else {
-// Simulate opponent AI eventually
 document.getElementById('passBtn').disabled = false;
+// Check if any valid moves remain
+const hasMove = checkAnyValidMove();
+if (!hasMove) {
+showToast('No valid moves!');
+setTimeout(() => passTurn(), 1000);
+}
 }
 }
 
@@ -1467,12 +1475,14 @@ updateDiceDisplay();
 
 document.getElementById('passBtn').disabled = false;
 
-// Check if any valid moves exist
 setTimeout(() => {
+drawBoard();
 const hasMove = checkAnyValidMove();
 if (!hasMove) {
 showToast('No valid moves!');
 setTimeout(() => passTurn(), 1200);
+} else {
+showToast('Your turn! Pick a piece 🎲');
 }
 }, 550);
 }
@@ -1720,22 +1730,39 @@ function showRooms(mode) {
 playerName = document.getElementById('playerName').value.trim() || 'Player';
 isFreePlay = (mode === 'free');
 if (isFreePlay) selectedBet = 0;
-
-// If no bet selected for paid mode, default to 76
 if (!isFreePlay && selectedBet === 0) selectedBet = 76;
 
-// Go directly to matchmaking
 document.getElementById('waitingBetDisplay').textContent = isFreePlay ? 'Free 🆓' : selectedBet + ' ⭐';
-const online = Math.floor(Math.random() * 40) + 8;
-document.getElementById('waitingOnline').textContent = online + ' players online';
+document.getElementById('waitingOnline').textContent = '...';
 showScreen('matchmaking');
 
-// Simulate finding opponent after 2-3 seconds
-const delay = 1500 + Math.random() * 2000;
-setTimeout(() => {
+// Try real socket first, fallback to AI after 5s
+connectSocket();
+
+let matchFound = false;
+
+// Join real queue
+if (socket && socket.connected) {
+socket.emit('join_queue', { name: playerName, bet: selectedBet, stars: myStars });
+socket.emit('get_online');
+}
+
+// Fallback to AI opponent after 5 seconds if no real match
+const fallbackTimer = setTimeout(() => {
+if (!matchFound) {
+isRealMultiplayer = false;
 const oppN = opponentNames[Math.floor(Math.random() * opponentNames.length)];
 startGame(oppN);
-}, delay);
+}
+}, 5000);
+
+// If real match found, cancel fallback
+if (socket) {
+socket.once('match_found', () => {
+matchFound = true;
+clearTimeout(fallbackTimer);
+});
+}
 }
 
 function generateRooms() {
