@@ -1911,7 +1911,7 @@ input.value = '';
 
 // Simulate opponent response sometimes
 if (Math.random() > 0.6) {
-const responses = ['😄','Nice!','Well played!','Hmm...','🎲','Good game!','Not bad!','Let's see 😏'];
+const responses = ['😄','Nice!','Well played!','Hmm...','🎲','Good game!','Not bad!',"Let's see 😏"];
 const oppN = document.getElementById('oppName').textContent;
 setTimeout(() => {
 addChatMessage('opp', oppN, responses[Math.floor(Math.random() * responses.length)]);
