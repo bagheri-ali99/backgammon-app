@@ -792,6 +792,8 @@ min-height: 16px;
 }
 </style>
 
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
 </head>
 <body>
 
@@ -2122,10 +2124,8 @@ simulateOpponentTurn();
 }
 
 // Connect on load
-connectSocket();
+try { connectSocket(); } catch(e) { console.log('Socket error:', e); }
 </script>
-
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
 </body>
 </html>
