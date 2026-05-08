@@ -495,22 +495,6 @@ border-radius:inherit;
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== TELEGRAM WEBAPP =====
-const tg = window.Telegram && window.Telegram.WebApp;
-let telegramId = null;
-let telegramUsername = null;
-
-if (tg) {
-  tg.ready();
-  tg.expand();
-  const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
-  if (user) {
-    telegramId = user.id;
-    telegramUsername = user.username || user.first_name || 'Player';
-    document.getElementById('playerName').value = user.first_name || '';
-  }
-}
-
 // ===== CONFIG =====
 const SERVER_URL = 'https://backgammon-server-hato.onrender.com';
 const WIN_AMOUNTS = {76: 140, 152: 280, 304: 560};
@@ -649,7 +633,7 @@ function connectSocket() {
     const iWon = socket.id === winnerId;
     // Balance already updated on server
     // Refresh balance
-    if (telegramId) socket.emit('init_user', { telegramId, username: telegramUsername });
+    if (telegramId) socket.emit('init_user', { telegramId, username: playerName });
   });
 }
 
@@ -860,23 +844,6 @@ function showToast(msg) {
 // We need to add rps_choice to the server too, but for now handle client-side
 // When real multiplayer: emit choice, wait for opponent_choice
 document.addEventListener('DOMContentLoaded', () => {
-  // Init Telegram user and get balance
-  if (telegramId) {
-    connectSocket();
-    setTimeout(() => {
-      if (socket && socket.connected) {
-        socket.emit('init_user', { telegramId, username: telegramUsername });
-      } else {
-        socket.once('connect', () => {
-          socket.emit('init_user', { telegramId, username: telegramUsername });
-        });
-      }
-    }, 1000);
-  }
-
-  // Handle balance update
-  // (moved inside connectSocket listener)
-
   selectBet(76);
   
   // Auto-fill name from Telegram
@@ -884,14 +851,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('playerName').value = playerName;
   }
 
-  // Load balance if Telegram user
+  // Connect and init user
   if (telegramId) {
     connectSocket();
-    function onConn() {
-      socket.emit('get_balance', { telegram_id: telegramId, username: tgUser.username || playerName });
-    }
-    if (socket && socket.connected) onConn();
-    else if (socket) socket.once('connect', onConn);
+    setTimeout(() => {
+      function doInit() {
+        socket.emit('init_user', { telegramId, username: tgUser ? (tgUser.username || playerName) : playerName });
+      }
+      if (socket && socket.connected) doInit();
+      else if (socket) socket.once('connect', doInit);
+    }, 800);
   }
 });
 </script>
