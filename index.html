@@ -7,6 +7,7 @@
 <title>Rock Paper Scissors ✊</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <style>
 :root {
@@ -353,6 +354,16 @@ border-radius:inherit;
     <div class="logo-sub">Rock · Paper · Scissors with Telegram Stars</div>
   </div>
 
+  <div id="balanceBox" style="display:none;background:var(--card2);border:1.5px solid rgba(245,197,24,0.3);border-radius:50px;padding:10px 24px;display:flex;align-items:center;gap:8px">
+    <span style="font-size:18px">⭐</span>
+    <span id="balanceVal" style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:var(--gold)">0</span>
+    <span style="font-size:12px;color:var(--muted)">Stars Balance</span>
+  </div>
+  <div id="balanceBox" style="display:none;background:var(--card2);border:1.5px solid rgba(245,197,24,0.3);border-radius:50px;padding:8px 20px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;color:var(--gold)">
+    ⭐ Balance: <span id="balanceVal">0</span>
+    <button onclick="addStars()" style="margin-right:8px;background:rgba(245,197,24,0.2);border:none;border-radius:20px;padding:3px 10px;color:var(--gold);font-size:12px;cursor:pointer;font-family:inherit">+ Add</button>
+  </div>
+
   <div class="name-wrap">
     <div class="field-label">Your Name</div>
     <input class="name-input" id="playerName" type="text" placeholder="Enter your name..." maxlength="16">
@@ -484,12 +495,35 @@ border-radius:inherit;
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== TELEGRAM WEBAPP =====
+const tg = window.Telegram && window.Telegram.WebApp;
+let telegramId = null;
+let telegramUsername = null;
+
+if (tg) {
+  tg.ready();
+  tg.expand();
+  const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
+  if (user) {
+    telegramId = user.id;
+    telegramUsername = user.username || user.first_name || 'Player';
+    document.getElementById('playerName').value = user.first_name || '';
+  }
+}
+
 // ===== CONFIG =====
 const SERVER_URL = 'https://backgammon-server-hato.onrender.com';
 const WIN_AMOUNTS = {76: 140, 152: 280, 304: 560};
+const BOT_TOKEN = '8598069647:AAG-7dNC_Y7e3SPV_wE1_m4QE4xGSp_fLWo';
+
+// ===== TELEGRAM WEBAPP =====
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
 
 // ===== STATE =====
-let playerName = '';
+let playerName = tgUser ? (tgUser.first_name || tgUser.username || '') : '';
+let telegramId = tgUser ? tgUser.id : null;
 let selectedBet = 0;
 let socket = null;
 let roomId = null;
@@ -501,6 +535,7 @@ let oppPick = null;
 let timerInterval = null;
 let timerSecs = 15;
 let matchFound = false;
+let myBalance = 0;
 
 // ===== BET SELECTION =====
 function selectBet(amount) {
@@ -522,6 +557,10 @@ function findOpponent() {
     showToast('⚠️ Please select a bet!');
     return;
   }
+  if (telegramId && myBalance < selectedBet) {
+    showToast('⭐ Not enough Stars! Tap + Add to deposit.');
+    return;
+  }
 
   document.getElementById('mmBet').textContent = selectedBet + ' ⭐ → Win ' + WIN_AMOUNTS[selectedBet] + ' ⭐';
   showScreen('matchmaking');
@@ -530,15 +569,21 @@ function findOpponent() {
   connectSocket();
 
   function onConn() {
-    socket.emit('join_queue', { name: playerName, bet: selectedBet });
+    socket.emit('join_queue', { name: playerName, bet: selectedBet, telegram_id: telegramId });
     socket.emit('get_online');
   }
   if (socket.connected) onConn();
   else socket.once('connect', onConn);
 
   socket.once('match_found', () => { matchFound = true; });
+}
 
-  // No AI fallback - wait for real player
+function addStars() {
+  if (!telegramId) { showToast('Open in Telegram to deposit Stars'); return; }
+  // Send invoice for 76 stars
+  if (tg) {
+    tg.openInvoice && showToast('Contact @NardX_bot to deposit Stars');
+  }
 }
 
 function cancelSearch() {
@@ -594,6 +639,18 @@ function connectSocket() {
   socket.on('queue_cancelled', () => showScreen('lobby'));
 
   socket.on('disconnect', () => {});
+
+  socket.on('user_data', ({ balance }) => {
+    document.getElementById('balanceVal').textContent = balance;
+    document.getElementById('balanceBox').style.display = 'flex';
+  });
+
+  socket.on('game_result', ({ winnerId, winAmount, bet }) => {
+    const iWon = socket.id === winnerId;
+    // Balance already updated on server
+    // Refresh balance
+    if (telegramId) socket.emit('init_user', { telegramId, username: telegramUsername });
+  });
 }
 
 // ===== GAME =====
@@ -649,7 +706,7 @@ function pickChoice(choice) {
   });
 
   if (isRealMultiplayer && socket) {
-    socket.emit('rps_choice', { roomId, choice });
+    socket.emit('rps_choice', { roomId, choice, telegramId });
     // Wait for opponent's choice via socket
   } else {
     // Bot picks after short delay
@@ -757,6 +814,11 @@ function updateTimerBar() {
 // ===== END MATCH =====
 function endMatch(iWon, opponentLeft) {
   clearTimer();
+  // Notify server of result
+  if (isRealMultiplayer && socket && roomId) {
+    if (iWon) socket.emit('game_over', { roomId, winnerId: socket.id, isDraw: false });
+    else if (!opponentLeft) socket.emit('game_over', { roomId, winnerId: 'opp', isDraw: false });
+  }
   const icon = iWon ? '🏆' : '💔';
   const title = opponentLeft ? 'Opponent Left — You Win!' : (iWon ? 'You Won! 🎉' : 'You Lost 😔');
   const cls = iWon ? 'win' : 'lose';
@@ -798,8 +860,39 @@ function showToast(msg) {
 // We need to add rps_choice to the server too, but for now handle client-side
 // When real multiplayer: emit choice, wait for opponent_choice
 document.addEventListener('DOMContentLoaded', () => {
-  // Pre-select first bet
+  // Init Telegram user and get balance
+  if (telegramId) {
+    connectSocket();
+    setTimeout(() => {
+      if (socket && socket.connected) {
+        socket.emit('init_user', { telegramId, username: telegramUsername });
+      } else {
+        socket.once('connect', () => {
+          socket.emit('init_user', { telegramId, username: telegramUsername });
+        });
+      }
+    }, 1000);
+  }
+
+  // Handle balance update
+  // (moved inside connectSocket listener)
+
   selectBet(76);
+  
+  // Auto-fill name from Telegram
+  if (playerName) {
+    document.getElementById('playerName').value = playerName;
+  }
+
+  // Load balance if Telegram user
+  if (telegramId) {
+    connectSocket();
+    function onConn() {
+      socket.emit('get_balance', { telegram_id: telegramId, username: tgUser.username || playerName });
+    }
+    if (socket && socket.connected) onConn();
+    else if (socket) socket.once('connect', onConn);
+  }
 });
 </script>
 
